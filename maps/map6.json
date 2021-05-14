@@ -1,0 +1,44 @@
+{ "compressionlevel":-1,
+ "height":20,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[11, 16, 6, 32, 16, 1, 11, 16, 16, 11, 16, 16, 11, 16, 6, 11, 16, 6, 1, 16, 6, 11, 16, 1, 11, 16, 6, 11, 16, 6, 11, 16, 6, 11, 16, 6, 11, 16, 1, 1, 16, 6, 11, 16, 6, 11, 16, 6, 11, 1, 6, 11, 16, 6, 11, 16, 1, 1, 16, 6],
+         "height":20,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 3, 11, 16, 38, 2, 17, 33, 4, 2, 16, 0, 1, 19, 3, 5, 0, 38, 0, 3, 33, 0, 40, 11, 0, 35, 11, 2, 0, 0, 1, 0, 0, 4, 2, 2, 0, 39, 38, 0, 34, 33, 0, 3, 0, 3, 5, 0, 38, 0, 0, 33, 3, 40, 0, 39, 35, 0, 34],
+         "height":20,
+         "id":2,
+         "name":"Tile Layer 2",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":3,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.6.0",
+ "tileheight":200,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"spritesheet.tsx"
+        }],
+ "tilewidth":200,
+ "type":"map",
+ "version":"1.6",
+ "width":3
+}
