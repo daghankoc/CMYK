@@ -6,67 +6,67 @@ class Play extends Phaser.Scene {
         
         //loading the assets   
 
-        //loading tilemap assets
-        this.load.image('tiles', './assets/rybSpriteSheet.png');
+        this.load.image('tiles', './assets/CMYK_spritesheet.png');
 
-        //this.load.tilemapTiledJSON('map', './maps/testmap_2.json');
-        //this.load.tilemapTiledJSON('map1', './maps/map1.json');
-
-        //preload final maps.
-
-            this.load.tilemapTiledJSON('easy1', './maps/maps_skill/easy1.json');
-            this.load.tilemapTiledJSON('easy2', './maps/maps_skill/easy2.json');
-            this.load.tilemapTiledJSON('easy3', './maps/maps_skill/easy3.json');
-
-            this.load.tilemapTiledJSON('mid1', './maps/maps_skill/mid1.json');
-            this.load.tilemapTiledJSON('mid2', './maps/maps_skill/mid2.json');
-            this.load.tilemapTiledJSON('mid3', './maps/maps_skill/mid3.json');
-            this.load.tilemapTiledJSON('mid4', './maps/maps_skill/mid4b.json');
-
-            this.load.tilemapTiledJSON('hard1', './maps/maps_skill/hard1.json');
-            this.load.tilemapTiledJSON('hard2', './maps/maps_skill/hard2.json');
-            this.load.tilemapTiledJSON('hard3', './maps/maps_skill/hard3.json');
-            this.load.tilemapTiledJSON('hard4', './maps/maps_skill/hard4.json');
-            this.load.tilemapTiledJSON('hard5', './maps/maps_skill/hard5.json');
-            this.load.tilemapTiledJSON('hard6', './maps/maps_skill/hard6.json');
-            this.load.tilemapTiledJSON('hard7', './maps/maps_skill/hard7.json');
+        //preload maps.
+        this.load.tilemapTiledJSON('CMYKtestmap1', './maps/CMYK testmap1.json');
+        this.load.tilemapTiledJSON('CMYKtestmap2', './maps/CMYK testmap2.json');
 
 
         //sound effect that plays when you move
-        this.load.audio('move_sfx', './assets/sound/testSound.wav')
-
+        this.load.audio('move_sfx', './assets/sound/testSound.wav');
         //sound effect that plays when you cycle colors
-        this.load.audio('cycle_sfx', './assets/sound/testSound.wav')
-
+        this.load.audio('cycle_sfx', './assets/sound/testSound.wav');
         //sound effect that plays when you cross into a new color zone (successfully)
-        this.load.audio('transition_sfx', './assets/sound/testSound.wav')
-
+        this.load.audio('transition_sfx', './assets/sound/testSound.wav');
         //sound effect that plays when you pause or use a menu button
-        this.load.audio('menu_sfx', './assets/sound/testSound.wav')
-
+        this.load.audio('menu_sfx', './assets/sound/testSound.wav');
         //sound effect that plays when you crash :(
-        this.load.audio('menu_sfx', './assets/sound/testSound.wav')
-
+        this.load.audio('menu_sfx', './assets/sound/testSound.wav');
         //background music
-        this.load.audio('music_sfx', './assets/sound/testMusic.mp3')
+        this.load.audio('music_sfx', './assets/sound/robotaki_obelisk.mp3');
 
 
-        //load image assets
-        this.load.image('UI_circle','./assets/UI_circle.png');
-        this.load.image('UI_circle_outline','./assets/UI_circle_outline.png');
+        //load tutorial assets
+        this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
+        this.load.image('tutorial_cycle', "./assets/tutorial/TutorialCycle.png");
+        this.load.image('tutorial_prepare', "./assets/tutorial/TutorialPrepare.png");
+        this.load.image('tutorial_prepare_text', "./assets/tutorial/TutorialPrepareJustText.png");
+        this.load.image('tutorial_barrier', "./assets/tutorial/TutorialBarrier.png");
+
     
         //loading the different player colors as spritesheets
         //frame 1 = red, 2 = blue,3 = yellow 
-        this.load.spritesheet('player', "./assets/arrowRYB.png",{
-            frameWidth: 112,
-            frameHeight: 167,
-            });
+        this.load.spritesheet('player', "./assets/CMYK_arrow_80_140.png",{
+            frameWidth: 80,
+            frameHeight: 140,
+        });
+    
+        this.load.spritesheet('redUI', "./assets/ui/dotsred.png",{
+            frameWidth: 100,
+            frameHeight: 100,
+        });
+
+        this.load.spritesheet('yellowUI', "./assets/ui/dotsyellow.png",{
+            frameWidth: 100,
+            frameHeight: 100,
+        });
+
+        this.load.spritesheet('blueUI', "./assets/ui/dotsblue.png",{
+            frameWidth: 100,
+            frameHeight: 100,
+        });
+
+        this.load.spritesheet('scoreUI', "./assets/ui/dotsscore.png",{
+            frameWidth: 100,
+            frameHeight: 100,
+        });
     }
     
     
     create() {
         //setting the background color to eggshell
-        this.cameras.main.setBackgroundColor('#fbfbe3');
+        //this.cameras.main.setBackgroundColor('#fbfbe3');
 
         this.sound.play('music_sfx');
 
@@ -74,39 +74,54 @@ class Play extends Phaser.Scene {
         this.transitioning = false;
         this.actionQueue = [];
         this.pause = false;
-        this.crash = false;
+        this.crashing = false;
+        this.colorTransition = false;
+        this.endofgame = false;
+        this.curRed = 0;
+        this.curColor = '';
+        this.hitboxRGB;
+        this.scores = [];
+        this.currentScore;
+
+        //declaring color bools
+
+        this.C = false;
+        this.M = false;
+        this.Y = false;
 
 
         //Adding inputes to use
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
         spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyPause = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
-        //maps
-        map3 = this.add.tilemap('easy1');
-        map3_visuals = map3.addTilesetImage('spritesheet', 'tiles');
-        map4 = this.add.tilemap('easy2');
-        map4_visuals = map4.addTilesetImage('spritesheet', 'tiles');
-        map5 = this.add.tilemap('easy3');
-        map5_visuals = map5.addTilesetImage('spritesheet', 'tiles');
-        map6 = this.add.tilemap('mid1');
-        map6_visuals = map6.addTilesetImage('spritesheet', 'tiles');
-        map7 = this.add.tilemap('mid2');
-        map7_visuals = map7.addTilesetImage('spritesheet', 'tiles');
+        this.cameras.main.setAlpha(0);
+        this.add.tween({
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 1000,
+        });
 
-
-        //map1 initialization
-        map1 = this.add.tilemap('hard2');
+        //mapData array initialization, based on mapNames order
+        for (let i = 0; i < mapNames.length; i++) {
+            mapData.push(this.add.tilemap(mapNames[i]))
+        }
+        
+        //map1 intiialization
+        map1 = mapData[0];
         visuals1 = map1.addTilesetImage('spritesheet', 'tiles'); //change "base" to "spritesheet" when we add the loading stuff update
         botLayer1 = map1.createLayer('Tile Layer 1', [visuals1], mapX, map1relative);
         topLayer1 = map1.createLayer('Tile Layer 2', [visuals1], mapX, map1relative);
         botLayer1.scale = tilemapScale;
         topLayer1.scale = tilemapScale;
-        currentMap = map1;
 
         //map2 initialization
-        map2 = this.add.tilemap('hard3');
+        map2 = mapData[1];
         visuals2 = map2.addTilesetImage('spritesheet', 'tiles'); //change "base" to "spritesheet" when we add the loading stuff update
         botLayer2 = map2.createLayer('Tile Layer 1', [visuals2], mapX, map2relative);
         topLayer2 = map2.createLayer('Tile Layer 2', [visuals2], mapX, map2relative);
@@ -118,33 +133,29 @@ class Play extends Phaser.Scene {
         playerShip.scale = arrowScale;
 
 
-        //setting the player to color red for the start
+        //setting the player to color black for the start
         playerShip.setFrame(0);
         playerShip.currentFrame = 0 
-
-
-        //rendering the ship above the lane
         playerShip.setDepth('1');    
 
-        //creating a bottom UI bar for the color indicator
-        this.circleOutline = this.add.sprite(screenCenterX - (arrowDist/2), 936, 'UI_circle_outline').setOrigin(0.5, 0.5);
-        this.circleOutline.setDepth('2');
-
-        //this.add.rectangle(0, screenCenterY * 1.9,screenCenterX * 2 , screenCenterY / 3, "0xffffff").setOrigin(0.5, 0.5);
-        this.redCircle = this.add.sprite(screenCenterX - (arrowDist/2), 935, 'UI_circle').setOrigin(0.5, 0.5);
-        this.redCircle.setTint("0xCF1313");
-        this.redCircle.setDepth('1');
+        //color UI Needs to be updated
+        // this.redCircle = this.add.sprite(screenCenterX - (arrowDist/2), 935, 'redUI').setOrigin(0.5, 0.5);
+        // this.redCircle.setDepth('1');
+        // this.redCircle.scale = 0.3;
+        // this.redCircle.setFrame(1)
         
-        this.yellowCircle = this.add.sprite(screenCenterX, 935, 'UI_circle').setOrigin(0.5, 0.5);
-        this.yellowCircle.setTint("0xeed456");
-        this.yellowCircle.setDepth('1');
+        // this.yellowCircle = this.add.sprite(screenCenterX, 935, 'yellowUI').setOrigin(0.5, 0.5);
+        // this.yellowCircle.setDepth('1');
+        // this.yellowCircle.scale = 0.3;
 
-        this.blueCircle = this.add.sprite(screenCenterX + (arrowDist/2), 935, 'UI_circle').setOrigin(0.5, 0.5);
-        this.blueCircle.setTint("0x1181D9");
-        this.blueCircle.setDepth('1');
+        // this.blueCircle = this.add.sprite(screenCenterX + (arrowDist/2), 935, 'blueUI').setOrigin(0.5, 0.5);
+        // this.blueCircle.setDepth('1');
+        // this.blueCircle.scale = 0.3;
 
- 
+        //score UI
+        this.createScoreUI();
     }
+
     update(){
 
         // let shipX = ((playerShip.x - mapX) / tilemapScale);
@@ -162,7 +173,6 @@ class Play extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(spaceBar)) {
-            //mapSpawner(mapToRemove);
             this.actionQueue.push("space");
             this.sound.play('cycle_sfx')
         }
@@ -172,11 +182,18 @@ class Play extends Phaser.Scene {
             this.sound.play('move_sfx');
         }
         
+
+
+        // this.C = keyA.isDown;
+        // this.M = keyS.isDown;
+        // this.Y = keyD.isDown;
+
+        // console.log(this.C, this.M, this.Y);
+
         
         if (!this.transitioning && this.actionQueue.length > 0) {
             let action = this.actionQueue.shift();
             if (action == "space") {
-                mapSpawner();
                 if (playerShip.currentFrame == 0)
                 {
                     console.log("Color switched to yellow");
@@ -230,138 +247,227 @@ class Play extends Phaser.Scene {
             }
         }
 
-        //getting the tile that the player is on every frame
-        //var tileToCheckTop = topLayer.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-        //var tileToCheckTop = botLayer.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-        
-        //console.log(tileToCheckTop.index);
-        
-        //var color1 = tileToCheck.texture.getPixel(10,10);
-        //console.log(color1);
-
-    
-
-        let tileToCheckTop = topLayer1.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-        let tileToCheckBot = botLayer1.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-        //console.log(tileToCheckTop); Passes entire object...
-
-
-        function indexToTileOrigin(index) {
-            let originX = (Math.floor(index % 5)) * 200; //finds the top left corner of the tile in question (on the spritesheet)
-            let originY = (Math.floor(index / 5)) * 200;
-            return([originX, originY]);
-        }
-
-        //checkCollisions(tileToCheckTop, tileToCheckBot);
-
-        function checkCollisions(topIndex, botIndex) {
-            let tileY = 0;
-            
-            //determine ship location over tileMap and then converts to tileY
-            if (botLayer1.y <= (map1relative + arrowY) && botLayer1.y > arrowY) {
-                tileY = ((botLayer1.y / tilemapScale) + arrowHeight)% 200;
-            }
-            if (botLayer2.y <= (map1relative + arrowY) && botLayer2.y > arrowY) {
-                tileY = ((botLayer2.y / tilemapScale) + arrowHeight)% 200;
-            }
-            //if (tileY = -1)
-            
-            //determines ship X value and then converts to tileX
-            let shipX = ((playerShip.x - mapX) / tilemapScale);
-            let tileX = Math.floor(shipX) % 200
-
-
-            //get pixel color at location on spritesheet
-            let color = this.textures.getPixel(tileX, tileY, 'tiles2');
-            console.log(color);
-
-            //compare do stuff with pixel color
-                //if topLayer is null (0, 0, 0) check bottom layer
-                    //if eggshell do nothing
-                    //if barrier crash
-                    //if red yellow or blue
-                        //compare color to current color 
-                        //if transition is fresh and color is same, do noting
-                        //if transition is fresh and color is different, crash (after certin ammount of time)
-                //set "crash" to true if crashed
-        }
-         
-        
-        //updateMap(travelDist, scrollSpeed); //old updateMap function, here for testing mostly...
-
+        //run functions
         if (!this.pause) { //if the game is not paused...
-            moveMap() //run moveMap fuction
+
+            //update the score (if the score needs updating)
+            if (scoreCount != this.currentScore) {
+                this.updateScore(scoreCount);
+                this.currentScore = scoreCount;
+                //console.log("i am firing");
+            }
+            
+            this.moveMap()
+
+            // // RGB of pixel under player (both layers) -1 mean no layer (#topLayer problems)
+            // this.hitboxRGB = this.getTilemapRGB();
+
+            // //determine the correct layer to test
+            // if (this.hitboxRGB[1][0] > 0) { //if red has no value in the top layer
+            //     this.curRed = (this.hitboxRGB[1][0]); //top layer is selected
+            // } else {
+            //     this.curRed = (this.hitboxRGB[0][0]); //otherwise, bottom layer is selected
+            // }
+
+            // //check collisions after converting Red value to a color string.
+            // this.checkCollisions(this.whatColor(this.curRed), playerColor);
         }
+    } // end of update function
 
-        function moveMap() {
-            map1Pos = map1dist; 
-            map2Pos = map2dist;
-
+    moveMap() {
+        map1Pos = map1dist;
+        map2Pos = map2dist;
+        
+        if (nextMap < mapNames.length - 1) {
             if (map1Pos > game.config.height + 50) {
                 map1dist = (map2dist + map1relative);
-                scrollSpeed++
-                //CALL FUNCTION THAT SWAPS MAPS HERE
+                //scrollSpeed++
+                if (nextMap >= mapNames.length -1) {
+                    nextMap = mapNames.length -1;
+                }
+                this.swapMap1(nextMap);
+                this.laneAddition(nextMap)
+                nextMap++;
+                //console.log(nextMap)
             }
-
+        
             if (map2Pos > game.config.height + 50) {
                 map2dist = (map1dist + map1relative);
-                scrollSpeed++
-                //CALL FUNCTION THAT SWAPS MAPS HERE
+                //scrollSpeed++
+                if (nextMap >= mapNames.length -1) {
+                    nextMap = mapNames.length -1;
+                }
+                this.swapMap2(nextMap)
+                this.laneAddition(nextMap)
+                nextMap++
+                //console.log(nextMap)
             }
-
-            botLayer1.setPosition(mapX, map1Pos);
-            topLayer1.setPosition(mapX, map1Pos);
-            botLayer2.setPosition(mapX, map2Pos);
-            topLayer2.setPosition(mapX, map2Pos);
-
-            //step maps forward
-            //if has crashed is false
-            map1dist += scrollSpeed;
-            map2dist += scrollSpeed;
-            rawDist++;
         }
 
-        function mapSpawner(){
-            //map1.LayerData.destroy();
-            if(travelDist <= 100){
-                var value = Phaser.Math.Between(0, 5);
-                console.log(value);
-                if(value == 1){
-                    map3_botLayer = map3.createLayer('Tile Layer 1', [map3_visuals], mapX, map2relative);
-                    map3_topLayer = map3.createLayer('Tile Layer 2', [map3_visuals], mapX, map2relative);
-                    map3_botLayer.scale = tilemapScale;
-                    map3_topLayer.scale = tilemapScale;
-                    currentMap = map3;
-                } else if (value == 2){
-                    map4_botLayer = map4.createLayer('Tile Layer 1', [map4_visuals], mapX, map2relative);
-                    map4_topLayer = map4.createLayer('Tile Layer 2', [map4_visuals], mapX, map2relative);
-                    currentMap = map4;
-                    map4_botLayer.scale = tilemapScale;
-                    map4_topLayer.scale = tilemapScale;
-                } else if (value == 3){
-                    map5_botLayer = map5.createLayer('Tile Layer 1', [map5_visuals], mapX, map2relative);
-                    map5_topLayer = map5.createLayer('Tile Layer 2', [map5_visuals], mapX, map2relative);
-                    currentMap = map5;
-                    map5_botLayer.scale = tilemapScale;
-                    map5_topLayer.scale = tilemapScale;
-                } else if (value == 4){
-                    map6_botLayer = map6.createLayer('Tile Layer 1', [map6_visuals], mapX, map2relative);
-                    map6_topLayer = map6.createLayer('Tile Layer 2', [map6_visuals], mapX, map2relative);
-                    currentMap = map6;
-                    map6_botLayer.scale = tilemapScale;
-                    map6_topLayer.scale = tilemapScale;
-                } else if (value == 5){
-                    map7_botLayer = map7.createLayer('Tile Layer 1', [map7_visuals], mapX, map2relative);
-                    map7_topLayer = map7.createLayer('Tile Layer 2', [map7_visuals], mapX, map2relative);
-                    currentMap = map7;
-                    map7_botLayer.scale = tilemapScale;
-                    map7_topLayer.scale = tilemapScale;
-                } 
-                
-            } else if (travelDist > 100){
-                Debug.log(">100");
+        
+        
+        botLayer1.setPosition(mapX, map1Pos);
+        topLayer1.setPosition(mapX, map1Pos);
+        botLayer2.setPosition(mapX, map2Pos);
+        topLayer2.setPosition(mapX, map2Pos);
+    
+        //step maps forward
+        //if has crashed is false
+        map1dist += scrollSpeed;
+        map2dist += scrollSpeed;
+        rawDist += scrollSpeed; //use this for the tutorial spacing
+
+        scoreCount = Math.floor((rawDist / tilemapScale) / 200)
+    }
+
+
+    //swap map functions, uses mapData array which is constructed in the create method.
+    swapMap1(index) {
+        map1 = mapData[index];
+        //visuals1 = map1.addTilesetImage('spritesheet', 'tiles');
+        
+        botLayer1.destroy();
+        topLayer1.destroy();
+
+        botLayer1 = map1.createLayer('Tile Layer 1', [visuals1], mapX, map1relative);
+        topLayer1 = map1.createLayer('Tile Layer 2', [visuals1], mapX, map1relative);
+        botLayer1.scale = tilemapScale;
+        topLayer1.scale = tilemapScale;
+    }
+    
+    swapMap2(index) {
+        map2 = mapData[index];
+        //visuals2 = map2.addTilesetImage('spritesheet', 'tiles');
+
+        botLayer2.destroy();
+        topLayer2.destroy();
+
+        botLayer2 = map2.createLayer('Tile Layer 1', [visuals2], mapX, map2relative);
+        topLayer2 = map2.createLayer('Tile Layer 2', [visuals2], mapX, map2relative);
+        botLayer2.scale = tilemapScale;
+        topLayer2.scale = tilemapScale;
+    }
+
+    //returns the (unsigned) binary data of a passed integer in 16 bits.
+    scoreBinary(score) {
+        if (score < 0) {
+            return 0;
+        }
+        let outputArr = [];
+        let num = score;
+        while(outputArr.length < 16) {
+            outputArr.push(num % 2);
+            num = Math.floor(num/2);
+        }
+        //console.log(outputArr)
+        return outputArr;
+    }
+
+    createScoreUI() {
+        let i = 0;
+        let posX = dotPaddingRight;
+        let posY = dotPaddingTop;
+
+        for (i = 1; i <= 16; i++) {
+            if (i == 9) {
+                posX -= dotHorizSpacing;
+                posY = dotPaddingTop;
             }
-            
+            let score = this.add.sprite(posX, posY, 'scoreUI').setOrigin(0.5, 0.5);
+            score.setDepth('1');
+            score.scale = 0.3;
+            score.setFrame(0);
+
+            this.scores.push(score);
+
+            posY += dotVertSpacing;
+        }
+    }
+
+    updateScore(score) {
+        let i = 0;
+        let binaryData = this.scoreBinary(score);
+        for (i = 0; i < 16; i++) {
+            this.scores[i].setFrame(binaryData[i]);
+        }
+    } //end of update function
+
+    //swap map functions, uses mapData array which is constructed in the create method.
+    swapMap1(index) {
+        map1 = mapData[index];
+        //visuals1 = map1.addTilesetImage('spritesheet', 'tiles');
+        
+        botLayer1.destroy();
+        topLayer1.destroy();
+
+        botLayer1 = map1.createLayer('Tile Layer 1', [visuals1], mapX, map1relative);
+        topLayer1 = map1.createLayer('Tile Layer 2', [visuals1], mapX, map1relative);
+        botLayer1.scale = tilemapScale;
+        topLayer1.scale = tilemapScale;
+    }
+    
+    swapMap2(index) {
+        map2 = mapData[index];
+        //visuals2 = map2.addTilesetImage('spritesheet', 'tiles');
+
+        botLayer2.destroy();
+        topLayer2.destroy();
+
+        botLayer2 = map2.createLayer('Tile Layer 1', [visuals2], mapX, map2relative);
+        topLayer2 = map2.createLayer('Tile Layer 2', [visuals2], mapX, map2relative);
+        botLayer2.scale = tilemapScale;
+        topLayer2.scale = tilemapScale;
+    }
+
+    //returns the (unsigned) binary data of a passed integer in 16 bits.
+    scoreBinary(score) {
+        if (score < 0) {
+            return 0;
+        }
+        let outputArr = [];
+        let num = score;
+        while(outputArr.length < 16) {
+            outputArr.push(num % 2);
+            num = Math.floor(num/2);
+        }
+        //console.log(outputArr)
+        return outputArr;
+    }
+
+    createScoreUI() {
+        let i = 0;
+        let posX = dotPaddingRight;
+        let posY = dotPaddingTop;
+
+        for (i = 1; i <= 16; i++) {
+            if (i == 9) {
+                posX -= dotHorizSpacing;
+                posY = dotPaddingTop;
+            }
+            let score = this.add.sprite(posX, posY, 'scoreUI').setOrigin(0.5, 0.5);
+            score.setDepth('1');
+            score.scale = 0.3;
+            score.setFrame(0);
+
+            this.scores.push(score);
+
+            posY += dotVertSpacing;
+        }
+    }
+
+    updateScore(score) {
+        let i = 0;
+        let binaryData = this.scoreBinary(score);
+        for (i = 0; i < 16; i++) {
+            this.scores[i].setFrame(binaryData[i]);
+        }
+    }
+
+    laneAddition(index){
+        if(index >= secondLane && index < thirdLane - 1){
+            laneNumber = 2;
+        }  else if(index >= thirdLane){
+            laneNumber = 3;
         }
     }
 }
