@@ -33,22 +33,22 @@ class Play extends Phaser.Scene {
 
 
         //sound effect that plays when you move
-        this.load.audio('move_sfx', './assets/testSound.wav')
+        this.load.audio('move_sfx', './assets/sound/testSound.wav')
 
         //sound effect that plays when you cycle colors
-        this.load.audio('cycle_sfx', './assets/testSound.wav')
+        this.load.audio('cycle_sfx', './assets/sound/testSound.wav')
 
         //sound effect that plays when you cross into a new color zone (successfully)
-        this.load.audio('transition_sfx', './assets/testSound.wav')
+        this.load.audio('transition_sfx', './assets/sound/testSound.wav')
 
         //sound effect that plays when you pause or use a menu button
-        this.load.audio('menu_sfx', './assets/testSound.wav')
+        this.load.audio('menu_sfx', './assets/sound/testSound.wav')
 
         //sound effect that plays when you crash :(
-        this.load.audio('menu_sfx', './assets/testSound.wav')
+        this.load.audio('menu_sfx', './assets/sound/testSound.wav')
 
         //background music
-        this.load.audio('music_sfx', './assets/testMusic.mp3')
+        this.load.audio('music_sfx', './assets/sound/testMusic.mp3')
 
 
         //load image assets
