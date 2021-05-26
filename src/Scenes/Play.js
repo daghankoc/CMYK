@@ -3,7 +3,6 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
     preload() {
-        
         //loading the assets   
 
         this.load.image('tiles', './assets/CMYK_spritesheet.png');
@@ -82,6 +81,7 @@ class Play extends Phaser.Scene {
         this.hitboxRGB;
         this.scores = [];
         this.currentScore;
+        this.currentPlayerColor;
 
         //declaring color bools
 
@@ -90,7 +90,7 @@ class Play extends Phaser.Scene {
         this.Y = false;
 
 
-        //Adding inputes to use
+        //Adding inputs to use
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -183,40 +183,81 @@ class Play extends Phaser.Scene {
         }
         
 
+        //selectiong the correct player color based on key inputs.
+        this.C = keyA.isDown;
+        this.M = keyS.isDown;
+        this.Y = keyD.isDown;
+        //console.log(this.C, this.M, this.Y);
 
-        // this.C = keyA.isDown;
-        // this.M = keyS.isDown;
-        // this.Y = keyD.isDown;
+        this.currentPlayerColor = this.colorLogic(this.C, this.M, this.Y);
+        console.log(this.currentPlayerColor);
+        if (this.currentPlayerColor != playerColor) {
+            switch (this.currentPlayerColor) {
+                case 'black':
+                    playerColor = "black";
+                    playerShip.setFrame(0);
+                    break;
+                case 'cyan':
+                    playerColor = "cyan";
+                    playerShip.setFrame(1);
+                    break;
+                case 'majenta':
+                    playerColor = "majenta";
+                    playerShip.setFrame(2);
+                    break;
+                case 'yellow':
+                    playerColor = "yellow";
+                    playerShip.setFrame(3);
+                    break;
+                case 'red':
+                    playerColor = "red";
+                    playerShip.setFrame(4);
+                    break;
+                case 'green':
+                    playerColor = "green";
+                    playerShip.setFrame(5);
+                    break;
+                case 'blue':
+                    playerColor = "blue";
+                    playerShip.setFrame(6);
+                    break;
+                case 'eggshell':
+                    playerColor = "eggshell";
+                    playerShip.setFrame(7);
+                    break;
+            }
+        }
+        
 
-        // console.log(this.C, this.M, this.Y);
+        
 
         
         if (!this.transitioning && this.actionQueue.length > 0) {
             let action = this.actionQueue.shift();
-            if (action == "space") {
-                if (playerShip.currentFrame == 0)
-                {
-                    console.log("Color switched to yellow");
-                    //changes the frame of the spritesheet to blue
-                    playerShip.setFrame(1);
-                    playerShip.currentFrame = 1;
-                    this.circleOutline.setPosition(screenCenterX, 936);
-                } else if (playerShip.currentFrame == 1)
-                {
-                    console.log("Color switched to blue");
-                    //changes the frame of the spritesheet to blue
-                    playerShip.setFrame(2);
-                    playerShip.currentFrame = 2;
-                    this.circleOutline.setPosition(screenCenterX + (arrowDist/2), 935);
-                } else if(playerShip.currentFrame == 2)
-                {
-                    console.log("Color switched to red");
-                    //changes the frame of the spritesheet to blue
-                    playerShip.setFrame(0);
-                    playerShip.currentFrame = 0;
-                    this.circleOutline.setPosition(screenCenterX - (arrowDist/2), 935);
-                }
-            }
+            // if (action == "space") {
+            //     if (playerShip.currentFrame == 0)
+            //     {
+            //         //console.log("Color switched to yellow");
+            //         //changes the frame of the spritesheet to blue
+            //         playerShip.setFrame(1);
+            //         playerShip.currentFrame = 1;
+            //         //this.circleOutline.setPosition(screenCenterX, 936);
+            //     } else if (playerShip.currentFrame == 1)
+            //     {
+            //         //console.log("Color switched to blue");
+            //         //changes the frame of the spritesheet to blue
+            //         playerShip.setFrame(2);
+            //         playerShip.currentFrame = 2;
+            //         //this.circleOutline.setPosition(screenCenterX + (arrowDist/2), 935);
+            //     } else if(playerShip.currentFrame == 2)
+            //     {
+            //         //console.log("Color switched to red");
+            //         //changes the frame of the spritesheet to blue
+            //         playerShip.setFrame(0);
+            //         playerShip.currentFrame = 0;
+            //         //this.circleOutline.setPosition(screenCenterX - (arrowDist/2), 935);
+            //     }
+            // }
 
             //Tween movement to right lane with left arrow key
             if(action == "right" && currentLane < 2){
@@ -274,6 +315,50 @@ class Play extends Phaser.Scene {
         }
     } // end of update function
 
+
+    //-------------------------
+    
+    colorLogic(C, M, Y) {
+        let color;
+        //convert inputs to binary
+        C *= 1;
+        M *= 2;
+        Y *= 4;
+
+        let inputCode = C + M + Y;
+        //console.log(inputCode);
+
+        switch (inputCode) {
+            case 0:
+                color = "black";
+                break;
+            case 1:
+                color = "cyan";
+                break;
+            case 2:
+                color = "majenta";
+                break;
+            case 3:
+                color = "blue";
+                break;
+            case 4:
+                color = "yellow";
+                break;
+            case 5:
+                color = "green";
+                break;
+            case 6:
+                color = "red";
+                break;
+            case 7:
+                color = "eggshell";
+                break;
+            default:
+                color = "n/a"
+        }
+        return color;
+    }
+
     moveMap() {
         map1Pos = map1dist;
         map2Pos = map2dist;
@@ -304,15 +389,12 @@ class Play extends Phaser.Scene {
             }
         }
 
-        
-        
         botLayer1.setPosition(mapX, map1Pos);
         topLayer1.setPosition(mapX, map1Pos);
         botLayer2.setPosition(mapX, map2Pos);
         topLayer2.setPosition(mapX, map2Pos);
     
         //step maps forward
-        //if has crashed is false
         map1dist += scrollSpeed;
         map2dist += scrollSpeed;
         rawDist += scrollSpeed; //use this for the tutorial spacing
@@ -320,77 +402,6 @@ class Play extends Phaser.Scene {
         scoreCount = Math.floor((rawDist / tilemapScale) / 200)
     }
 
-
-    //swap map functions, uses mapData array which is constructed in the create method.
-    swapMap1(index) {
-        map1 = mapData[index];
-        //visuals1 = map1.addTilesetImage('spritesheet', 'tiles');
-        
-        botLayer1.destroy();
-        topLayer1.destroy();
-
-        botLayer1 = map1.createLayer('Tile Layer 1', [visuals1], mapX, map1relative);
-        topLayer1 = map1.createLayer('Tile Layer 2', [visuals1], mapX, map1relative);
-        botLayer1.scale = tilemapScale;
-        topLayer1.scale = tilemapScale;
-    }
-    
-    swapMap2(index) {
-        map2 = mapData[index];
-        //visuals2 = map2.addTilesetImage('spritesheet', 'tiles');
-
-        botLayer2.destroy();
-        topLayer2.destroy();
-
-        botLayer2 = map2.createLayer('Tile Layer 1', [visuals2], mapX, map2relative);
-        topLayer2 = map2.createLayer('Tile Layer 2', [visuals2], mapX, map2relative);
-        botLayer2.scale = tilemapScale;
-        topLayer2.scale = tilemapScale;
-    }
-
-    //returns the (unsigned) binary data of a passed integer in 16 bits.
-    scoreBinary(score) {
-        if (score < 0) {
-            return 0;
-        }
-        let outputArr = [];
-        let num = score;
-        while(outputArr.length < 16) {
-            outputArr.push(num % 2);
-            num = Math.floor(num/2);
-        }
-        //console.log(outputArr)
-        return outputArr;
-    }
-
-    createScoreUI() {
-        let i = 0;
-        let posX = dotPaddingRight;
-        let posY = dotPaddingTop;
-
-        for (i = 1; i <= 16; i++) {
-            if (i == 9) {
-                posX -= dotHorizSpacing;
-                posY = dotPaddingTop;
-            }
-            let score = this.add.sprite(posX, posY, 'scoreUI').setOrigin(0.5, 0.5);
-            score.setDepth('1');
-            score.scale = 0.3;
-            score.setFrame(0);
-
-            this.scores.push(score);
-
-            posY += dotVertSpacing;
-        }
-    }
-
-    updateScore(score) {
-        let i = 0;
-        let binaryData = this.scoreBinary(score);
-        for (i = 0; i < 16; i++) {
-            this.scores[i].setFrame(binaryData[i]);
-        }
-    } //end of update function
 
     //swap map functions, uses mapData array which is constructed in the create method.
     swapMap1(index) {
