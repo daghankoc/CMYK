@@ -62,8 +62,8 @@ const arrowMovementL = '-=' + (200 * tilemapScale);
 //map movement variables
 let map1Pos = 0;
 let map2Pos = 0;
-const map1relative = ((8000 * tilemapScale) * -1);  //  -4800
-const map2relative = ((8000 * tilemapScale) * -2);  //  -9600
+const map1relative = ((8000 * tilemapScale) * -1);  //  -4000
+const map2relative = ((8000 * tilemapScale) * -2);  //  -8000
 let map1dist = map1relative;
 let map2dist = map2relative;
 
@@ -71,14 +71,14 @@ let map2dist = map2relative;
 let playerColor = 'red'; //starting color is red
 
 //tile color (under player)
-let tileColor
+let tileColor;
 
 //total distance traveled, to be used for score later
 let scoreCount = 0;
 let rawDist = -arrowY;
 
 //scrolling rate (start)
-let scrollSpeed = 5;
+let scrollSpeed = 4;
 
 //current lane of the player
 let currentLane = 1;
@@ -95,7 +95,7 @@ const dotPaddingTop = 50;
 //data structures and stuff for maps
 
 //map name arrays, must be updated when new maps are added
-let mapsEasy = ['CMYKtestmap1', 'CMYKtestmap2'];
+let mapsEasy = ['testmap1', 'testmap2', 'testmap3', 'testmap4', 'testmap5', 'testmap6'];
 let mapsMid = [];
 let mapsHard = [];
 
