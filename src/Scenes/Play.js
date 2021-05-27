@@ -23,8 +23,9 @@ class Play extends Phaser.Scene {
         //sound effect that plays when you crash :(
         this.load.audio('menu_sfx', './assets/sound/testSound.wav');
         //background music
-        this.load.audio('music_sfx', './assets/sound/robotaki_obelisk.mp3');
-
+        this.load.audio('music_sfx1', './assets/sound/robotaki_obelisk.mp3');
+        this.load.audio('music_sfx2', './assets/sound/open_eye_signal.mp3');
+        this.load.audio('music_sfx3', './assets/sound/lick_it.mp3');
 
         //load tutorial assets
         this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
@@ -66,8 +67,10 @@ class Play extends Phaser.Scene {
     create() {
         //setting the background color to eggshell
         //this.cameras.main.setBackgroundColor('#fbfbe3');
-
-        this.sound.play('music_sfx');
+        // this.bgm = this.sound.add('music_sfx');
+        // this.bgm.play('music_sfx', {volume: 0.5});
+        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 10 
+        this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
 
         //declaring local variables
         this.transitioning = false;
@@ -324,8 +327,7 @@ class Play extends Phaser.Scene {
         C *= 1;
         M *= 2;
         Y *= 4;
-
-        let inputCode = C + M + Y;
+        let inputCode = C + M + Y; //convert binary to integer
         //console.log(inputCode);
 
         switch (inputCode) {
