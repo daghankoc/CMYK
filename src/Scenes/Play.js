@@ -8,8 +8,12 @@ class Play extends Phaser.Scene {
         this.load.image('tiles', './assets/CMYK_spritesheet.png');
 
         //preload maps.
-        this.load.tilemapTiledJSON('CMYKtestmap1', './maps/CMYK testmap1.json');
-        this.load.tilemapTiledJSON('CMYKtestmap2', './maps/CMYK testmap2.json');
+        this.load.tilemapTiledJSON('testmap1', './maps/CMYK_testmap1.json');
+        this.load.tilemapTiledJSON('testmap2', './maps/CMYK_testmap2.json');
+        this.load.tilemapTiledJSON('testmap3', './maps/CMYK_testmap3.json');
+        this.load.tilemapTiledJSON('testmap4', './maps/CMYK_testmap4.json');
+        this.load.tilemapTiledJSON('testmap5', './maps/CMYK_testmap5.json');
+        this.load.tilemapTiledJSON('testmap6', './maps/CMYK_testmap6.json');
 
 
         //sound effect that plays when you move

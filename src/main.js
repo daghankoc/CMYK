@@ -95,7 +95,7 @@ const dotPaddingTop = 50;
 //data structures and stuff for maps
 
 //map name arrays, must be updated when new maps are added
-let mapsEasy = ['CMYKtestmap1', 'CMYKtestmap2'];
+let mapsEasy = ['testmap1', 'testmap2', 'testmap3', 'testmap4', 'testmap5', 'testmap6'];
 let mapsMid = [];
 let mapsHard = [];
 
