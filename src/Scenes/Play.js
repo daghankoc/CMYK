@@ -129,7 +129,7 @@ class Play extends Phaser.Scene {
         topLayer2.scale = tilemapScale;
 
         // placing arrow asset
-        playerShip = this.add.sprite(screenCenterX, arrowY, 'player').setOrigin(0.5,0.5);
+        playerShip = this.add.sprite(screenCenterX - (100 * tilemapScale), arrowY, 'player').setOrigin(0.5,0.5);
         playerShip.scale = arrowScale;
 
 
@@ -190,7 +190,7 @@ class Play extends Phaser.Scene {
         //console.log(this.C, this.M, this.Y);
 
         this.currentPlayerColor = this.colorLogic(this.C, this.M, this.Y);
-        console.log(this.currentPlayerColor);
+        //console.log(this.currentPlayerColor);
         if (this.currentPlayerColor != playerColor) {
             switch (this.currentPlayerColor) {
                 case 'black':
@@ -260,7 +260,7 @@ class Play extends Phaser.Scene {
             // }
 
             //Tween movement to right lane with left arrow key
-            if(action == "right" && currentLane < 2){
+            if(action == "right" && currentLane < 3){
                 this.transitioning = true;
 
                 this.add.tween({
