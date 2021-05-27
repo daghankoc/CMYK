@@ -5,7 +5,7 @@ class Play extends Phaser.Scene {
     preload() {
         //loading the assets   
 
-        this.load.image('tiles', './assets/CMYK_spritesheet.png');
+        this.load.image('tiles', './assets/CMYK_spritesheet1.png');
 
         //preload maps.
         this.load.tilemapTiledJSON('testmap1', './maps/CMYK_testmap1.json');
