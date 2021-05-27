@@ -326,43 +326,12 @@ class Play extends Phaser.Scene {
     //-------------------------
     
     colorLogic(C, M, Y) {
-        let color;
+        let color = ['black', 'cyan', 'majenta', 'blue', 'yellow', 'green', 'red', 'eggshell']
         //convert inputs to binary
         C *= 1;
         M *= 2;
         Y *= 4;
-        let inputCode = C + M + Y; //convert binary to integer
-        //console.log(inputCode);
-
-        switch (inputCode) {
-            case 0:
-                color = "black";
-                break;
-            case 1:
-                color = "cyan";
-                break;
-            case 2:
-                color = "majenta";
-                break;
-            case 3:
-                color = "blue";
-                break;
-            case 4:
-                color = "yellow";
-                break;
-            case 5:
-                color = "green";
-                break;
-            case 6:
-                color = "red";
-                break;
-            case 7:
-                color = "eggshell";
-                break;
-            default:
-                color = "n/a"
-        }
-        return color;
+        return color[C + M + Y];
     }
 
     moveMap() {
