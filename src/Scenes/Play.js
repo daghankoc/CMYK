@@ -544,7 +544,7 @@ class Play extends Phaser.Scene {
         
             if (map2Pos > game.config.height + 50) {
                 map2dist = (map1dist + map1relative);
-                //scrollSpeed++
+                scrollSpeed++
                 if (nextMap >= mapNames.length -1) {
                     nextMap = mapNames.length -1;
                 }
