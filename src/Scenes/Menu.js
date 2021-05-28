@@ -4,7 +4,8 @@ class Menu extends Phaser.Scene {
     }
     
     preload(){
-        this.load.image('ryb_logo', './assets/RYB_logo_linear.png');
+        this.load.image('cmyk_logo', './assets/CMYKmenu_logo.png');
+        this.load.image('flower', './assets/menu_flower.png');
     }
 
     create(){
@@ -20,12 +21,13 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        this.ryb = this.add.image(325, 250, 'ryb_logo');
+        this.ryb = this.add.image(screenCenterX-1, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
+        this.flower = this.add.image(screenCenterX, screenCenterY - 166, 'flower').setOrigin(0.5);
         //const startButton = this.add.text(game.config.width/2, game.config.height/2, 'START', menuConfig).setOrigin(0.5)
         //.setInteractive()
         // .on('pointerdown', () => this.scene.start("playScene"));
         
-        this.startButton = this.add.text(game.config.width/2, game.config.height/2, 'START', menuConfig).setOrigin(0.5)
+        this.startButton = this.add.text(game.config.width/2, game.config.height * 0.75, 'START', menuConfig).setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => 
             this.tweens.add({
@@ -41,7 +43,7 @@ class Menu extends Phaser.Scene {
         
     }
     update(){
-        
+        this.flower.angle++;
     }
 
 }
