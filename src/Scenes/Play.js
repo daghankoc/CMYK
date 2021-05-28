@@ -325,7 +325,7 @@ class Play extends Phaser.Scene {
     } // end of update function
 
 
-    //-------------------------
+    //------------Player Control Functions-------------//
     
     colorLogic(C, M, Y) {
         let color = ['black', 'cyan', 'majenta', 'blue', 'yellow', 'green', 'red', 'eggshell']
@@ -371,6 +371,8 @@ class Play extends Phaser.Scene {
         return color;
     }
 
+    //~~~~~~~~Collision Handeler Functions~~~~~~~~//
+
     //getting the tile that the player is on every frame
     getTilemapRGB() {
         let tileY = 0;
@@ -383,35 +385,27 @@ class Play extends Phaser.Scene {
         let topRGB;
         let botRGB;
     
-        //determine ship location (y) over tileMap and then converts to tileY
-        //also gather tile data
-
+        //determine ship location (y) over tileMap and then converts to tileY, also gather tile data
         if (Math.abs(map1Pos) <= (Math.abs(map1relative + arrowY)) && map1Pos < arrowY) {
             tileY = ((map1Pos - arrowY) / tilemapScale) % 200;
-            tileY = Math.abs(Math.floor(tileY)); // weird shit with the positioning since map1 pos can be pos and neg.
-            //console.log(tileY);
+            tileY = Math.abs(Math.floor(tileY));
 
             tileToCheckTop = topLayer1.getTileAtWorldXY(playerShip.x, playerShip.y, true);
             tileToCheckBot = botLayer1.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-
         }
+
         if (Math.abs(map2Pos) <= (Math.abs(map1relative + arrowY)) && map2Pos < arrowY) {
             tileY = (((map1Pos - arrowY) + map1relative) / tilemapScale) % 200;
             tileY = Math.abs(Math.floor(tileY));
 
             tileToCheckTop = topLayer2.getTileAtWorldXY(playerShip.x, playerShip.y, true);
             tileToCheckBot = botLayer2.getTileAtWorldXY(playerShip.x, playerShip.y, true);
-            //console.log(tileY);
         }
     
         //determines ship X value and then converts to tileX
         tileX = Math.floor(((playerShip.x - mapX) / tilemapScale)) % 200;
 
-        //console.log(tileToCheckTop);
-        //console.log(tileToCheckBot);
-
-        //if a tilemap is loaded, pull the correct indexes.
-        //otherwise just exit
+        //if a tilemap is loaded, pull the correct indexes. otherwise just exit
         if (tileToCheckBot != null) {
                 selectedIndex[0] = tileToCheckBot.index;
                 selectedIndex[1] = tileToCheckTop.index;
@@ -419,7 +413,6 @@ class Play extends Phaser.Scene {
             selectedIndex = [-1, -1];
             return selectedIndex;
         }
-        //console.log(selectedIndex[0]);
     
         //if top layer isn't empty, get the RGB at player location
         if (selectedIndex[1] != -1) {
@@ -441,16 +434,12 @@ class Play extends Phaser.Scene {
         return [botRGB, topRGB];
     }
     
-    //function that converts a tilemap index to the origin point (in pixels) of that tile on the spritesheet.
+    //function that converts a tilemap index to the origin point (in pixels) of that tile on the map sprite atlas.
     indexToTileOrigin(index, arrowX, arrowY) {
         let indexMinus1 = index - 1;
-        // if (arrowY == 0) {
-        //     arrowY = 199;
-        // }
-
         let originX = (Math.floor((indexMinus1) % 16)) * 200; //finds the top left corner of the tile in question (on the spritesheet)
         let originY = ((indexMinus1 - (indexMinus1 % 16)) / 16) * 200;
-        //console.log(index, originX, originY);
+
         return([originX + arrowX, originY + arrowY]);
     }
 
@@ -459,12 +448,9 @@ class Play extends Phaser.Scene {
         let color = game.scene.getScenes()[0].textures.getPixel(xy[0], xy[1], 'tiles');
         if (color != null) {
             return [color.r, color.g, color.b, color.a]; //actual RGB
-            //return (color.r + color.g + color.b); //sum of RGB
         } else {
             return [-1, -1, -1, -1];
-            //return -1;
-        }
-            
+        }  
     }
     
     checkCollisions(newTile, player) { 
@@ -474,7 +460,6 @@ class Play extends Phaser.Scene {
         } else {
             this.colorTransition = false;
         }
-
         if (this.colorTransition) {
             switch (newTile) {
                 case 'cyan':
@@ -526,7 +511,7 @@ class Play extends Phaser.Scene {
                     console.log('safe black');
                     break;
                 default:
-                    console.log('case n/a');
+                    console.log('n/a');
             }
         }
         if (this.crashing) { //if a crash has been detected
@@ -538,6 +523,9 @@ class Play extends Phaser.Scene {
         tileColor = newTile;
     }
 
+    //~~~~~~~~ Map Functions ~~~~~~~//
+
+    //functions that handels moving the two maps, switching thier contents and positions occasionally.
     moveMap() {
         map1Pos = map1dist;
         map2Pos = map2dist;
@@ -552,7 +540,6 @@ class Play extends Phaser.Scene {
                 this.swapMap1(nextMap);
                 this.laneAddition(nextMap)
                 nextMap++;
-                //console.log(nextMap)
             }
         
             if (map2Pos > game.config.height + 50) {
@@ -564,10 +551,8 @@ class Play extends Phaser.Scene {
                 this.swapMap2(nextMap)
                 this.laneAddition(nextMap)
                 nextMap++
-                //console.log(nextMap)
             }
         }
-        //console.log(map1Pos);
         botLayer1.setPosition(mapX, map1Pos);
         topLayer1.setPosition(mapX, map1Pos);
         botLayer2.setPosition(mapX, map2Pos);
@@ -576,17 +561,14 @@ class Play extends Phaser.Scene {
         //step maps forward
         map1dist += scrollSpeed;
         map2dist += scrollSpeed;
-        rawDist += scrollSpeed; //use this for the tutorial spacing
+        rawDist += scrollSpeed; //this is used for the tutorial spacing.
 
         scoreCount = Math.floor((rawDist / tilemapScale) / 200)
     }
 
-
     //swap map functions, uses mapData array which is constructed in the create method.
     swapMap1(index) {
         map1 = mapData[index];
-        //visuals1 = map1.addTilesetImage('spritesheet', 'tiles');
-        
         botLayer1.destroy();
         topLayer1.destroy();
 
@@ -598,8 +580,6 @@ class Play extends Phaser.Scene {
     
     swapMap2(index) {
         map2 = mapData[index];
-        //visuals2 = map2.addTilesetImage('spritesheet', 'tiles');
-
         botLayer2.destroy();
         topLayer2.destroy();
 
@@ -609,20 +589,7 @@ class Play extends Phaser.Scene {
         topLayer2.scale = tilemapScale;
     }
 
-    //returns the (unsigned) binary data of a passed integer in 16 bits.
-    scoreBinary(score) {
-        if (score < 0) {
-            return 0;
-        }
-        let outputArr = [];
-        let num = score;
-        while(outputArr.length < 16) {
-            outputArr.push(num % 2);
-            num = Math.floor(num/2);
-        }
-        //console.log(outputArr)
-        return outputArr;
-    }
+    //~~~~~~~~Score Functions~~~~~~~~//
 
     createScoreUI() {
         let i = 0;
@@ -640,9 +607,23 @@ class Play extends Phaser.Scene {
             score.setFrame(0);
 
             this.scores.push(score);
-
             posY += dotVertSpacing;
         }
+    }
+
+    //returns the (unsigned) binary data of a passed integer in 16 bits.
+    scoreBinary(score) {
+        if (score < 0) {
+            return 0;
+        }
+        let outputArr = [];
+        let num = score;
+        while(outputArr.length < 16) {
+            outputArr.push(num % 2);
+            num = Math.floor(num/2);
+        }
+        //console.log(outputArr)
+        return outputArr;
     }
 
     updateScore(score) {
@@ -652,6 +633,8 @@ class Play extends Phaser.Scene {
             this.scores[i].setFrame(binaryData[i]);
         }
     }
+
+    //~~~~~~~~Other Functions~~~~~~~~//
 
     laneAddition(index){
         if(index >= secondLane && index < thirdLane - 1){
