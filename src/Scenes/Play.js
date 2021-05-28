@@ -85,7 +85,7 @@ class Play extends Phaser.Scene {
         this.endofgame = false;
         this.curRGB = 0;
         this.curColor = '';
-        this.hitboxRGB;
+        this.shipLocationRGB;
         this.scores = [];
         this.currentScore;
         this.currentPlayerColor;
@@ -187,6 +187,7 @@ class Play extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyPause)) { //pause button, needs menu?
             this.pause = !this.pause;
             this.sound.play('move_sfx');
+            console.log("pause");
         }
         
 
@@ -201,35 +202,35 @@ class Play extends Phaser.Scene {
         if (this.currentPlayerColor != playerColor) {
             switch (this.currentPlayerColor) {
                 case 'black':
-                    playerColor = "black";
+                    playerColor = 'black';
                     playerShip.setFrame(0);
                     break;
                 case 'cyan':
-                    playerColor = "cyan";
+                    playerColor = 'cyan';
                     playerShip.setFrame(1);
                     break;
                 case 'majenta':
-                    playerColor = "majenta";
+                    playerColor = 'majenta';
                     playerShip.setFrame(2);
                     break;
                 case 'yellow':
-                    playerColor = "yellow";
+                    playerColor = 'yellow';
                     playerShip.setFrame(3);
                     break;
                 case 'red':
-                    playerColor = "red";
+                    playerColor = 'red';
                     playerShip.setFrame(4);
                     break;
                 case 'green':
-                    playerColor = "green";
+                    playerColor = 'green';
                     playerShip.setFrame(5);
                     break;
                 case 'blue':
-                    playerColor = "blue";
+                    playerColor = 'blue';
                     playerShip.setFrame(6);
                     break;
                 case 'eggshell':
-                    playerColor = "eggshell";
+                    playerColor = 'eggshell';
                     playerShip.setFrame(7);
                     break;
             }
@@ -302,23 +303,22 @@ class Play extends Phaser.Scene {
             if (scoreCount != this.currentScore) {
                 this.updateScore(scoreCount);
                 this.currentScore = scoreCount;
-                //console.log("i am firing");
             }
             
             this.moveMap()
 
-            // RGB of pixel under player (both layers) -1 mean no layer (#topLayer problems)
-            this.hitboxRGB = this.getTilemapRGB();
+            // RGBA of pixel under player (both layers) -1 mean no layer (#topLayer problems)
+            this.shipLocationRGB = this.getTilemapRGB();
             //console.log(this.hitboxRGB);
 
             //determine the correct layer to test
-            if (this.hitboxRGB[1][0] > 0) { //if top layer has a value
-                this.curRGB = (this.hitboxRGB[1]); //top layer is selected
+            if (this.shipLocationRGB[1][0] + this.shipLocationRGB[1][1] + this.shipLocationRGB[1][2] > 0) { //if top layer has a value
+                this.curRGB = (this.shipLocationRGB[1]); //top layer is selected
             } else {
-                this.curRGB = (this.hitboxRGB[0]); //otherwise, bottom layer is selected
+                this.curRGB = (this.shipLocationRGB[0]); //otherwise, bottom layer is selected
             }
-            //console.log(this.curRGB);
 
+            //console.log(this.curRGB[0]);
             //check collisions after converting Red value to a color string.
             this.checkCollisions(this.whatColor(this.curRGB), playerColor);
         }
@@ -337,35 +337,36 @@ class Play extends Phaser.Scene {
     }
 
     // function to figure out what color an RGB value is, This version only uses the R value.
-    whatColor(RGBsum) {
+    whatColor(RGBA) {
         let color;
+        let RGBsum = RGBA[0] + RGBA[1] + RGBA[2]; //sum Red Green and Blue values to get unique color code
         switch (RGBsum) {
             case 86:
-                color = "black";
+                color = 'black';
                 break;
             case 563:
-                color = "cyan";
+                color = 'cyan';
                 break;
             case 579:
-                color = "majenta";
+                color = 'majenta';
                 break;
             case 586:
-                color = "yellow";
+                color = 'yellow';
                 break;
             case 352:
-                color = "red";
+                color = 'red';
                 break;
             case 327:
-                color = "green";
+                color = 'green';
                 break;
             case 315:
-                color = "blue";
+                color = 'blue';
                 break;
             case 729:
-                color = "eggshell";
+                color = 'eggshell';
                 break;
             default:
-                color = "n/a"
+                color = 'n/a';
         }
         return color;
     }
@@ -395,7 +396,7 @@ class Play extends Phaser.Scene {
 
         }
         if (Math.abs(map2Pos) <= (Math.abs(map1relative + arrowY)) && map2Pos < arrowY) {
-            tileY = ((map1Pos - arrowY) / tilemapScale) % 200;
+            tileY = (((map1Pos - arrowY) + map1relative) / tilemapScale) % 200;
             tileY = Math.abs(Math.floor(tileY));
 
             tileToCheckTop = topLayer2.getTileAtWorldXY(playerShip.x, playerShip.y, true);
@@ -411,11 +412,11 @@ class Play extends Phaser.Scene {
 
         //if a tilemap is loaded, pull the correct indexes.
         //otherwise just exit
-        if (tileToCheckTop != null) {
+        if (tileToCheckBot != null) {
                 selectedIndex[0] = tileToCheckBot.index;
                 selectedIndex[1] = tileToCheckTop.index;
             } else {
-            selectedIndex[0, 1] = -1;
+            selectedIndex = [-1, -1];
             return selectedIndex;
         }
         //console.log(selectedIndex[0]);
@@ -423,10 +424,9 @@ class Play extends Phaser.Scene {
         //if top layer isn't empty, get the RGB at player location
         if (selectedIndex[1] != -1) {
             topLayerXY = this.indexToTileOrigin(selectedIndex[1], tileX, tileY);
-            //console.log(topLayerXY);
             topRGB = this.getPixelRGB(topLayerXY);
         } else {
-            topRGB = -1;
+            topRGB = [-1, -1, -1, -1];
         }
 
         //if bottom layer isn't empty, get the RGB at player location
@@ -434,7 +434,7 @@ class Play extends Phaser.Scene {
             botLayerXY = this.indexToTileOrigin(selectedIndex[0], tileX, tileY);
             botRGB = this.getPixelRGB(botLayerXY);
         } else {
-            botRGB = -1;
+            botRGB = [-1, -1, -1, -1];
         }
 
         //return RGB data (or lack thereof)
@@ -444,27 +444,25 @@ class Play extends Phaser.Scene {
     //function that converts a tilemap index to the origin point (in pixels) of that tile on the spritesheet.
     indexToTileOrigin(index, arrowX, arrowY) {
         let indexMinus1 = index - 1;
-        if (index == -1) {
-            return -1
-        } else {
-            let originX = (Math.floor((indexMinus1) % 16)) * 200; //finds the top left corner of the tile in question (on the spritesheet)
-            let originY = ((indexMinus1 - (indexMinus1 % 16)) / 16) * 200;
-            //console.log(index, originX, originY);
-            return([originX + arrowX, originY + arrowY]);
-        }
+        // if (arrowY == 0) {
+        //     arrowY = 199;
+        // }
+
+        let originX = (Math.floor((indexMinus1) % 16)) * 200; //finds the top left corner of the tile in question (on the spritesheet)
+        let originY = ((indexMinus1 - (indexMinus1 % 16)) / 16) * 200;
+        //console.log(index, originX, originY);
+        return([originX + arrowX, originY + arrowY]);
     }
 
     //function that gets the RGB value at a particular XY location on the spritesheet 'tiles'
     getPixelRGB(xy) {
         let color = game.scene.getScenes()[0].textures.getPixel(xy[0], xy[1], 'tiles');
-            //console.log([color.r, color.g, color.b, color.a]);
-            //console.log('RGB sum = ' + color.r + color.g + color.b);
         if (color != null) {
-            //return [color.r, color.g, color.b, color.a]; //actual RGB
-            return (color.r + color.g + color.b); //sum of RGB
+            return [color.r, color.g, color.b, color.a]; //actual RGB
+            //return (color.r + color.g + color.b); //sum of RGB
         } else {
-            //return [-1, -1, -1, -1];
-            return -1;
+            return [-1, -1, -1, -1];
+            //return -1;
         }
             
     }
@@ -528,7 +526,7 @@ class Play extends Phaser.Scene {
                     console.log('safe black');
                     break;
                 default:
-                    // nothing needs to be done
+                    console.log('case n/a');
             }
         }
         if (this.crashing) { //if a crash has been detected

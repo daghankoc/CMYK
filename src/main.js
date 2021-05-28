@@ -71,7 +71,7 @@ let map2dist = map2relative;
 let playerColor = 'red'; //starting color is red
 
 //tile color (under player)
-let tileColor;
+let tileColor = 'n/a';
 
 //total distance traveled, to be used for score later
 let scoreCount = 0;
