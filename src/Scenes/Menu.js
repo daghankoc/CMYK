@@ -21,8 +21,8 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        this.ryb = this.add.image(screenCenterX-1, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
-        this.flower = this.add.image(screenCenterX, screenCenterY - 166, 'flower').setOrigin(0.5);
+        this.ryb = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
+        this.flower = this.add.image(screenCenterX+1, screenCenterY - 166, 'flower').setOrigin(0.5);
         //const startButton = this.add.text(game.config.width/2, game.config.height/2, 'START', menuConfig).setOrigin(0.5)
         //.setInteractive()
         // .on('pointerdown', () => this.scene.start("playScene"));
@@ -31,7 +31,7 @@ class Menu extends Phaser.Scene {
         .setInteractive()
         .on('pointerdown', () => 
             this.tweens.add({
-                targets: [this.ryb, this.startButton],
+                targets: [this.ryb, this.startButton, this.flower],
                 x: -250,
                 duration: 2000,
                 ease: 'Cubic',
