@@ -4,14 +4,14 @@ class Gameover extends Phaser.Scene{
     }
 
     preload(){
-        this.load.image('ryb_logo', './assets/RYB_logo_linear.png');
+        this.load.image('cmyk_logo', './assets/CMYKmenu_logo.png');
+        this.load.image('flower', './assets/menu_flower.png');
     }
     create(){
         let menuConfig = {
             fontFamily: 'Quicksand',
             fontSize: '28px',
-            backgroundColor: '#AEB6BF',
-            color: '#000',
+            color: '#AEB6BF',
             align: 'right',
             padding: {
                 top: 0,
@@ -19,13 +19,15 @@ class Gameover extends Phaser.Scene{
             },
             fixedWidth: 0
         }
-        this.add.image(325, 250, 'ryb_logo'); 
-        this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2 , game.config.height/1.8, 'Score: ', menuConfig).setOrigin(0.5);
-        //needs score variable
+        this.cmyk = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
+        this.flower = this.add.image(screenCenterX+1, screenCenterY - 166, 'flower').setOrigin(0.5);
+        this.gameoverButton = this.add.text(game.config.width/2, game.config.height * 0.72, 'GAME OVER', menuConfig).setOrigin(0.5)
+        this.scoreUI = this.add.text(game.config.width/2.1, game.config.height * 0.77, 'SCORE: ', menuConfig).setOrigin(0.5)
+        this.score = this.add.text(game.config.width/1.715, game.config.height * 0.77, scoreCount, menuConfig).setOrigin(0.5)
+        this.restartButton = this.add.text(game.config.width/2, game.config.height * 0.9, 'RESTART', menuConfig).setOrigin(0.5)
     }
     update(){
-
+        this.flower.angle--;
     }
     
 }

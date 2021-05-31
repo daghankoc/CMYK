@@ -12,8 +12,8 @@ class Menu extends Phaser.Scene {
         let menuConfig = {
             fontFamily: 'Quicksand',
             fontSize: '28px',
-            backgroundColor: '#AEB6BF',
-            color: '#000',
+            //backgroundColor: '#AEB6BF',
+            color: '#AEB6BF',
             align: 'right',
             padding: {
                 top: 0,
@@ -21,7 +21,7 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        this.ryb = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
+        this.cmyk = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
         this.flower = this.add.image(screenCenterX+1, screenCenterY - 166, 'flower').setOrigin(0.5);
         //const startButton = this.add.text(game.config.width/2, game.config.height/2, 'START', menuConfig).setOrigin(0.5)
         //.setInteractive()
@@ -31,7 +31,7 @@ class Menu extends Phaser.Scene {
         .setInteractive()
         .on('pointerdown', () => 
             this.tweens.add({
-                targets: [this.ryb, this.startButton, this.flower],
+                targets: [this.cmyk, this.startButton, this.flower],
                 x: -250,
                 duration: 2000,
                 ease: 'Cubic',
