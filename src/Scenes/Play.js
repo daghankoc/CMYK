@@ -519,7 +519,8 @@ class Play extends Phaser.Scene {
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
-            this.scene.start('gameoverScene')
+            this.scene.stop('playScene')
+            this.scene.launch('gameoverScene')
         }
         tileColor = newTile;
     }

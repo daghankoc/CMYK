@@ -29,16 +29,16 @@ class Menu extends Phaser.Scene {
         
         this.startButton = this.add.text(game.config.width/2, game.config.height * 0.75, 'START', menuConfig).setOrigin(0.5)
         .setInteractive()
-        .on('pointerdown', () => 
+        .on('pointerdown', () => {
             this.tweens.add({
                 targets: [this.cmyk, this.startButton, this.flower],
                 x: -250,
                 duration: 2000,
                 ease: 'Cubic',
-                onComplete: ()=> this.scene.start('playScene'),
-            })
-        //this.scene.start("playScene")
-        );
+                onComplete: ()=> this.scene.stop('menuScene'),
+            });
+            this.scene.launch("playScene")
+        });
 
         
     }
