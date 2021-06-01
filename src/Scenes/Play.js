@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         //background music
         this.load.audio('music_sfx1', './assets/sound/robotaki_obelisk.mp3');
         this.load.audio('music_sfx2', './assets/sound/open_eye_signal.mp3');
-        //this.load.audio('music_sfx3', './assets/sound/lick_it.mp3');
+        this.load.audio('music_sfx3', './assets/sound/fuckin house music.wav');
 
         //load tutorial assets
         this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
@@ -37,6 +37,7 @@ class Play extends Phaser.Scene {
         this.load.image('tutorial_prepare_text', "./assets/tutorial/TutorialPrepareJustText.png");
         this.load.image('tutorial_barrier', "./assets/tutorial/TutorialBarrier.png");
 
+        this.load.image('background', "./assets/ui/bg 1.png");
     
         //player spritesheet
         this.load.spritesheet('player', "./assets/CMYK_arrow_80_140.png",{
@@ -63,7 +64,8 @@ class Play extends Phaser.Scene {
         //this.cameras.main.setBackgroundColor('#fbfbe3');
         // this.bgm = this.sound.add('music_sfx');
         // this.bgm.play('music_sfx', {volume: 0.5});
-        this.randMusic = Math.floor(Math.random() * 2) + 1;  // returns a random integer from 1 to 10 
+
+        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 10 
         this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
 
         //declaring local variables
@@ -80,6 +82,7 @@ class Play extends Phaser.Scene {
         this.currentScore;
         this.currentPlayerColor;
         this.colorUI;
+        this.background = [];
 
         //declaring color bools
 
@@ -104,6 +107,12 @@ class Play extends Phaser.Scene {
             alpha: 1,
             duration: 1000,
         });
+
+        for (let j = 0; j < 3; j++) {
+            this.background[j] = this.add.tileSprite(screenCenterX, screenCenterY, 640, 960, 'background').setOrigin(0.5, 0.5);
+            this.background[j].scale = ((j + 1) / 10) + 0.9;
+            this.background[j].alpha = (j + 1) / 4;
+        }
 
         //mapData array initialization, based on mapNames order
         for (let i = 0; i < mapNames.length; i++) {
@@ -284,6 +293,10 @@ class Play extends Phaser.Scene {
                 currentLane --;
             }
         }
+
+        this.background[0].tilePositionY -= 1;
+        this.background[1].tilePositionY -= 1.1;
+        this.background[2].tilePositionY -= 1.2;
 
         //run functions
         if (!this.pause) { //if the game is not paused...
