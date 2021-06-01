@@ -3,8 +3,7 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
     preload() {
-        //loading the assets   
-
+        //loading map assets 
         this.load.image('tiles', './assets/CMYK_spritesheet1.png');
 
         //preload maps.
@@ -29,7 +28,7 @@ class Play extends Phaser.Scene {
         //background music
         this.load.audio('music_sfx1', './assets/sound/robotaki_obelisk.mp3');
         this.load.audio('music_sfx2', './assets/sound/open_eye_signal.mp3');
-        this.load.audio('music_sfx3', './assets/sound/lick_it.mp3');
+        //this.load.audio('music_sfx3', './assets/sound/lick_it.mp3');
 
         //load tutorial assets
         this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
@@ -39,31 +38,22 @@ class Play extends Phaser.Scene {
         this.load.image('tutorial_barrier', "./assets/tutorial/TutorialBarrier.png");
 
     
-        //loading the different player colors as spritesheets
-        //frame 1 = red, 2 = blue,3 = yellow 
+        //player spritesheet
         this.load.spritesheet('player', "./assets/CMYK_arrow_80_140.png",{
             frameWidth: 80,
             frameHeight: 140,
         });
-    
-        this.load.spritesheet('redUI', "./assets/ui/dotsred.png",{
-            frameWidth: 100,
-            frameHeight: 100,
+
+        //Score UI spritesheet
+        this.load.spritesheet('scoreUI', "./assets/ui/CMYK_score_dot.png",{
+            frameWidth: 50,
+            frameHeight: 50,
         });
 
-        this.load.spritesheet('yellowUI', "./assets/ui/dotsyellow.png",{
-            frameWidth: 100,
-            frameHeight: 100,
-        });
-
-        this.load.spritesheet('blueUI', "./assets/ui/dotsblue.png",{
-            frameWidth: 100,
-            frameHeight: 100,
-        });
-
-        this.load.spritesheet('scoreUI', "./assets/ui/dotsscore.png",{
-            frameWidth: 100,
-            frameHeight: 100,
+        //color UI spritesheet
+        this.load.spritesheet('colorUI', "./assets/ui/CMYK UI.png",{
+            frameWidth: 235,
+            frameHeight: 110,
         });
     }
     
@@ -73,7 +63,7 @@ class Play extends Phaser.Scene {
         //this.cameras.main.setBackgroundColor('#fbfbe3');
         // this.bgm = this.sound.add('music_sfx');
         // this.bgm.play('music_sfx', {volume: 0.5});
-        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 10 
+        this.randMusic = Math.floor(Math.random() * 2) + 1;  // returns a random integer from 1 to 10 
         this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
 
         //declaring local variables
@@ -89,6 +79,7 @@ class Play extends Phaser.Scene {
         this.scores = [];
         this.currentScore;
         this.currentPlayerColor;
+        this.colorUI;
 
         //declaring color bools
 
@@ -139,27 +130,17 @@ class Play extends Phaser.Scene {
         playerShip = this.add.sprite(screenCenterX - (100 * tilemapScale), arrowY, 'player').setOrigin(0.5,0.5);
         playerShip.scale = arrowScale;
 
-
         //setting the player to color black for the start
         playerShip.setFrame(0);
         playerShip.currentFrame = 0 
-        playerShip.setDepth('1');    
-
-        //color UI Needs to be updated
-        // this.redCircle = this.add.sprite(screenCenterX - (arrowDist/2), 935, 'redUI').setOrigin(0.5, 0.5);
-        // this.redCircle.setDepth('1');
-        // this.redCircle.scale = 0.3;
-        // this.redCircle.setFrame(1)
+        playerShip.setDepth('1');
         
-        // this.yellowCircle = this.add.sprite(screenCenterX, 935, 'yellowUI').setOrigin(0.5, 0.5);
-        // this.yellowCircle.setDepth('1');
-        // this.yellowCircle.scale = 0.3;
+        //creating colorUI
+        this.colorUI = this.add.sprite(screenCenterX, screenCenterY + (screenCenterY * 0.85), 'colorUI').setOrigin(0.5, 0.5);
+        this.colorUI.setDepth('1');
+        //this.colorUI.scale = 0.5;
+        this.colorUI.setFrame(0);
 
-        // this.blueCircle = this.add.sprite(screenCenterX + (arrowDist/2), 935, 'blueUI').setOrigin(0.5, 0.5);
-        // this.blueCircle.setDepth('1');
-        // this.blueCircle.scale = 0.3;
-
-        //score UI
         this.createScoreUI();
     }
 
@@ -204,34 +185,42 @@ class Play extends Phaser.Scene {
                 case 'black':
                     playerColor = 'black';
                     playerShip.setFrame(0);
+                    this.colorUI.setFrame(0);
                     break;
                 case 'cyan':
                     playerColor = 'cyan';
                     playerShip.setFrame(1);
+                    this.colorUI.setFrame(1);
                     break;
                 case 'majenta':
                     playerColor = 'majenta';
                     playerShip.setFrame(2);
+                    this.colorUI.setFrame(2);
                     break;
                 case 'yellow':
                     playerColor = 'yellow';
                     playerShip.setFrame(3);
+                    this.colorUI.setFrame(3);
                     break;
                 case 'red':
                     playerColor = 'red';
                     playerShip.setFrame(4);
+                    this.colorUI.setFrame(4);
                     break;
                 case 'green':
                     playerColor = 'green';
                     playerShip.setFrame(5);
+                    this.colorUI.setFrame(5);
                     break;
                 case 'blue':
                     playerColor = 'blue';
                     playerShip.setFrame(6);
+                    this.colorUI.setFrame(6);
                     break;
                 case 'eggshell':
                     playerColor = 'eggshell';
                     playerShip.setFrame(7);
+                    this.colorUI.setFrame(7);
                     break;
             }
         }
@@ -604,7 +593,7 @@ class Play extends Phaser.Scene {
             }
             let score = this.add.sprite(posX, posY, 'scoreUI').setOrigin(0.5, 0.5);
             score.setDepth('1');
-            score.scale = 0.3;
+            score.scale = 0.5;
             score.setFrame(0);
 
             this.scores.push(score);

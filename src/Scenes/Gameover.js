@@ -25,9 +25,25 @@ class Gameover extends Phaser.Scene{
         this.scoreUI = this.add.text(game.config.width/2.1, game.config.height * 0.77, 'SCORE: ', menuConfig).setOrigin(0.5)
         this.score = this.add.text(game.config.width/1.715, game.config.height * 0.77, scoreCount, menuConfig).setOrigin(0.5)
         this.restartButton = this.add.text(game.config.width/2, game.config.height * 0.9, 'RESTART', menuConfig).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => 
+            this.tweens.add({
+                targets: [this.cmyk, this.restartButton, this.flower],
+                x: -250,
+                duration: 1000,
+                ease: 'Cubic',
+                onComplete: this.restart(),
+            })
+        //this.scene.start("playScene")
+        );
     }
     update(){
         this.flower.angle--;
     }
-    
+
+    restart() {
+        this.scene.stop('playScene');
+        this.scene.start('playScene');
+    }
 }
+
