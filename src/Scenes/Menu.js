@@ -12,7 +12,7 @@ class Menu extends Phaser.Scene {
     }
 
     create(){
-        this.cameras.main.fadeIn(2000, 0, 0, 0)
+        //this.cameras.main.fadeIn(2000, 0, 0, 0)
         this.cmyk = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
         this.flower = this.add.image(screenCenterX+1, screenCenterY - 166, 'flower').setOrigin(0.5);
         this.creditsButton = this.add.image(game.config.width/1.45, game.config.height * 0.8, 'creditsButton').setOrigin(0.5)

@@ -9,7 +9,7 @@ class Credits extends Phaser.Scene {
     }
 
     create(){
-        this.cameras.main.fadeIn(2000, 0, 0, 0)
+        //this.cameras.main.fadeIn(2000, 0, 0, 0)
         let menuConfig = {
             fontFamily: 'Quicksand',
             fontSize: '28px',
