@@ -8,6 +8,7 @@ class Gameover extends Phaser.Scene{
         this.load.image('flower', './assets/menu_flower.png');
     }
     create(){
+        this.cameras.main.fadeIn(2000, 0, 0, 0)
         let menuConfig = {
             fontFamily: 'Quicksand',
             fontSize: '28px',
