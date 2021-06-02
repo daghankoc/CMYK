@@ -31,14 +31,19 @@ class Play extends Phaser.Scene {
         this.load.audio('music_sfx3', './assets/sound/fuckin house music.wav');
 
         //load tutorial assets
-        this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
-        this.load.image('tutorial_cycle', "./assets/tutorial/TutorialCycle.png");
-        this.load.image('tutorial_prepare', "./assets/tutorial/TutorialPrepare.png");
-        this.load.image('tutorial_prepare_text', "./assets/tutorial/TutorialPrepareJustText.png");
-        this.load.image('tutorial_barrier', "./assets/tutorial/TutorialBarrier.png");
+        // this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
+        // this.load.image('tutorial_cycle', "./assets/tutorial/TutorialCycle.png");
+        // this.load.image('tutorial_prepare', "./assets/tutorial/TutorialPrepare.png");
+        // this.load.image('tutorial_prepare_text', "./assets/tutorial/TutorialPrepareJustText.png");
+        // this.load.image('tutorial_barrier', "./assets/tutorial/TutorialBarrier.png");
 
+        //background
         this.load.image('background', "./assets/ui/bg 1.png");
-    
+
+        //UI background
+        this.load.image('UIbackgroundR', "./assets/ui/UI_backgroundRight.png");
+        this.load.image('UIbackgroundL', "./assets/ui/UI_backgroundLeft.png");
+
         //player spritesheet
         this.load.spritesheet('player', "./assets/CMYK_arrow_80_140.png",{
             frameWidth: 80,
@@ -82,6 +87,7 @@ class Play extends Phaser.Scene {
         this.currentScore;
         this.currentPlayerColor;
         this.colorUI;
+        this.scoreBackground;
         this.background = [];
 
         //declaring color bools
@@ -149,6 +155,12 @@ class Play extends Phaser.Scene {
         this.colorUI.setDepth('1');
         //this.colorUI.scale = 0.5;
         this.colorUI.setFrame(0);
+
+        this.scoreBackground = this.add.sprite(screenCenterX + (400 * tilemapScale), -100, 'UIbackgroundR').setOrigin(0,0);
+        this.scoreBackground.alpha = 0.75;
+
+        this.scoreBackground = this.add.sprite(screenCenterX - (400 * tilemapScale), -100, 'UIbackgroundL').setOrigin(1,0);
+        this.scoreBackground.alpha = 0.75;
 
         this.createScoreUI();
     }
