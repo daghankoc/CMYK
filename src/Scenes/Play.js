@@ -482,52 +482,58 @@ class Play extends Phaser.Scene {
                     if (player != 'cyan') {
                         this.crashing = true;
                     } else {
-                        console.log('safe cyan');
+                        //console.log('safe cyan');
+                        safeTranstions++;
                     }
                     break;
                 case 'majenta':
                     if (player != 'majenta') {
                         this.crashing = true;
                     } else {
-                        console.log('safe majenta');
+                        //console.log('safe majenta');
+                        safeTranstions++;
                     }
                     break;
                 case 'yellow':
                     if (player != 'yellow') {
                         this.crashing = true;
                     } else {
-                        console.log('safe yellow');
+                        //console.log('safe yellow');
+                        safeTranstions++;
                     }
                     break;
                 case 'red':
                     if (player != 'red') {
                         this.crashing = true;
                     } else {
-                        console.log('safe red');
+                        //console.log('safe red');
+                        safeTranstions++;
                     }
                     break;
                 case 'green':
                     if (player != 'green') {
                         this.crashing = true;
                     } else {
-                        console.log('safe green');
+                        //console.log('safe green');
+                        safeTranstions++;
                     }
                     break;
                 case 'blue':
                     if (player != 'blue') {
                         this.crashing = true;
                     } else {
-                        console.log('safe blue');
+                        //console.log('safe blue');
+                        safeTranstions++;
                     }
                     break;
                 case 'eggshell':
                     this.crashing = true;
                     break;
                 case 'black':
-                    console.log('safe black');
+                    //console.log('safe black');
                     break;
                 default:
-                    console.log('n/a');
+                    //console.log('n/a');
             }
         }
         if (this.crashing) { //if a crash has been detected
@@ -535,11 +541,20 @@ class Play extends Phaser.Scene {
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
+            
             if(lives == 0) {
-                this.scene.stop('playScene')
-                this.scene.start('gameoverScene')
+                console.log("game over!");
+                this.time.addEvent({
+                    delay: 1100,
+                    callback: ()=>{
+                        this.endScene();
+                    },
+                    loop: false
+                })
             } else if (lives > 0 ) {
                 this.reverseMap();
+                lives--;
+                console.log("remaining lives: " + lives);
             }
         }
         tileColor = newTile;
@@ -609,6 +624,11 @@ class Play extends Phaser.Scene {
         topLayer2 = map2.createLayer('Tile Layer 2', [visuals2], mapX, map2relative);
         botLayer2.scale = tilemapScale;
         topLayer2.scale = tilemapScale;
+    }
+
+    endScene() {
+        this.scene.stop('playScene');
+        this.scene.launch('gameoverScene');
     }
 
     //~~~~~~~~Score Functions~~~~~~~~//
@@ -767,7 +787,6 @@ class Play extends Phaser.Scene {
         map1dist = m1;
         map2dist = m2;
         this.pause = false;
-        lives--;
     }
 
 }

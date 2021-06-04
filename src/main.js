@@ -75,6 +75,7 @@ let tileColor = 'n/a';
 
 //total distance traveled, to be used for score later
 let scoreCount = 0;
+let safeTranstions = 0;
 let rawDist = -arrowY;
 
 //scrolling rate (start)
