@@ -715,27 +715,59 @@ class Play extends Phaser.Scene {
         }
     }
     reverseMap() {
+        let m1Reset;
+        let m2Reset;
+        if (Math.abs(map1Pos - 4000) < Math.abs(map2Pos - 4000)) {
+            m1Reset = map1relative + arrowY;
+            m2Reset = map2relative + arrowY;
+        } else {
+            m1Reset = map2relative + arrowY;
+            m2Reset = map1relative + arrowY;
+        }
+
         console.log('reversed');
         this.add.tween({
-            targets: map1,
-            map1dist : -500,
-            duration: 200,
+            targets: topLayer1,
+            y : m1Reset,
+            duration: 2000,
             ease: 'Cubic',
-            onComplete: ()=> this.transitioning = false,
+            // onComplete: ()=> this.transitioning = false,
         })
         this.add.tween({
-            targets: map2,
-            map2dist : -500,
-            duration: 200,
+            targets: botLayer1,
+            y : m1Reset,
+            duration: 2000,
             ease: 'Cubic',
-            onComplete: ()=> this.transitioning = false,
+            onComplete: ()=> this.rewindPos(m1Reset, m2Reset),
         })
-        setTimeout(() => {
-            this.pause = false;
-            lives --;
-            map1dist -= 500;
-            map2dist -= 500;
-        }, 3000);
+
+        this.add.tween({
+            targets: topLayer2,
+            y : m2Reset,
+            duration: 2000,
+            ease: 'Cubic',
+            // onComplete: ()=> this.transitioning = false,
+        })
+        this.add.tween({
+            targets: botLayer2,
+            y : m2Reset,
+            duration: 2000,
+            ease: 'Cubic',
+            onComplete: ()=> this.rewindPos(m1Reset, m2Reset),
+        })
+        // setTimeout(() => {
+        //     this.pause = false;
+        //     lives --;
+        //     map1Pos -= m1Reset;
+        //     map2Pos -= m2Reset;
+        // }, 3000);
+    }
+
+    rewindPos(m1,m2) {
+        map1dist = m1;
+        map2dist = m2;
+        this.pause = false;
+        lives--;
     }
 
 }
