@@ -98,6 +98,7 @@ class Play extends Phaser.Scene {
 
 
         //Adding inputs to use
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -195,13 +196,14 @@ class Play extends Phaser.Scene {
 
         //selectiong the correct player color based on key inputs.
         this.C = keyA.isDown;
-        this.M = keyS.isDown;
+        this.M = keyW.isDown + keyS.isDown;
         this.Y = keyD.isDown;
         //console.log(this.C, this.M, this.Y);
 
         this.currentPlayerColor = this.colorLogic(this.C, this.M, this.Y);
         //console.log(this.currentPlayerColor);
         if (this.currentPlayerColor != playerColor) {
+            this.playerRevBump();
             switch (this.currentPlayerColor) {
                 case 'black':
                     playerColor = 'black';
@@ -648,6 +650,55 @@ class Play extends Phaser.Scene {
         for (i = 0; i < 16; i++) {
             this.scores[i].setFrame(binaryData[i]);
         }
+    }
+    //~~~~~~~~Rybit / Power up functions~~~~~~~~//
+
+    rybbitCollision(rybitsArray) {
+        for (let i = 0; i < rybitsArray.length; i++) {
+            rybitsArray[i].x;
+        }
+    }
+
+    //~~~~~~~~effects~~~~~~~~//
+
+    playerBump() {
+        this.add.tween({
+            targets: playerShip,
+            scale : arrowScale+ 0.1,
+            duration: 50,
+            ease: 'cubic',
+            onComplete: ()=> this.add.tween({
+                targets: playerShip,
+                scale : arrowScale,
+                duration: 50,
+                ease: 'cubic',
+            }),
+        })
+    }
+
+    playerRevBump() {
+        playerShip.scale = arrowScale - (arrowScale / 20);
+        this.add.tween({
+            targets: playerShip,
+            scale : arrowScale,
+            duration: 50,
+            ease: 'cubic',
+        })
+    }
+
+    playerDeath() {
+        this.add.tween({
+            targets: playerShip,
+            scale : 1,
+            duration: 1100,
+            ease: 'cubic',
+        })
+        this.add.tween({
+            targets: playerShip,
+            alpha : 0,
+            duration: 1100,
+            ease: 'cubic',
+        })
     }
 
     //~~~~~~~~Other Functions~~~~~~~~//

@@ -13,7 +13,7 @@ var config = {
 let game = new Phaser.Game(config);
 
 // reserving conrols
-let keyA, keyS, keyD, spaceBar, keyLeft, keyRight, keyPause;
+let keyW, keyA, keyS, keyD, spaceBar, keyLeft, keyRight, keyPause;
 
 // set Global variables
 
