@@ -43,6 +43,20 @@ class Menu extends Phaser.Scene {
             });
             this.scene.start('creditsScene')
         });
+
+        this.tutorialButton
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.tweens.add({
+                targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
+                x: -250,
+                duration: 2000,
+                ease: 'Cubic',
+                onComplete: ()=> this.scene.stop('menuScene'),
+            });
+            this.scene.start('tutorialScene')
+        });
+
     }
     update(){
         this.flower.angle++;

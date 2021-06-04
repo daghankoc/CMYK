@@ -4,7 +4,7 @@ var config = {
     height: 960,
     margin: 0,
     transparent: true,
-    scene : [Menu, Credits, Play, Gameover],
+    scene : [Menu, Credits, Play, Gameover, Tutorial],
     parent: 'phaser_canvas',
     //autoCenter: true,
 };
@@ -89,6 +89,9 @@ const dotHorizSpacing = 50;
 
 const dotPaddingRight = game.config.width - 50;
 const dotPaddingTop = 50;
+
+//total lives of the player
+let lives = 3;
 
 
 
