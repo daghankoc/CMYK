@@ -533,8 +533,12 @@ class Play extends Phaser.Scene {
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
-            this.scene.stop('playScene')
-            this.scene.start('gameoverScene')
+            if(lives == 0) {
+                this.scene.stop('playScene')
+                this.scene.start('gameoverScene')
+            } else if (lives > 0 ) {
+                this.reverseMap();
+            }
         }
         tileColor = newTile;
     }
@@ -659,4 +663,28 @@ class Play extends Phaser.Scene {
             laneNumber = 3;
         }
     }
+    reverseMap() {
+        console.log('reversed');
+        this.add.tween({
+            targets: map1,
+            map1dist : -500,
+            duration: 200,
+            ease: 'Cubic',
+            onComplete: ()=> this.transitioning = false,
+        })
+        this.add.tween({
+            targets: map2,
+            map2dist : -500,
+            duration: 200,
+            ease: 'Cubic',
+            onComplete: ()=> this.transitioning = false,
+        })
+        setTimeout(() => {
+            this.pause = false;
+            lives --;
+            map1dist -= 500;
+            map2dist -= 500;
+        }, 3000);
+    }
+
 }

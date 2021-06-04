@@ -90,6 +90,9 @@ const dotHorizSpacing = 50;
 const dotPaddingRight = game.config.width - 50;
 const dotPaddingTop = 50;
 
+//total lives of the player
+let lives = 3;
+
 
 
 //data structures and stuff for maps
