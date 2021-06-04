@@ -89,6 +89,7 @@ class Play extends Phaser.Scene {
         this.colorUI;
         this.scoreBackground;
         this.background = [];
+        this.rewinding = false;
 
         //declaring color bools
 
@@ -248,36 +249,8 @@ class Play extends Phaser.Scene {
             }
         }
         
-
-        
-
-        
         if (!this.transitioning && this.actionQueue.length > 0) {
             let action = this.actionQueue.shift();
-            // if (action == "space") {
-            //     if (playerShip.currentFrame == 0)
-            //     {
-            //         //console.log("Color switched to yellow");
-            //         //changes the frame of the spritesheet to blue
-            //         playerShip.setFrame(1);
-            //         playerShip.currentFrame = 1;
-            //         //this.circleOutline.setPosition(screenCenterX, 936);
-            //     } else if (playerShip.currentFrame == 1)
-            //     {
-            //         //console.log("Color switched to blue");
-            //         //changes the frame of the spritesheet to blue
-            //         playerShip.setFrame(2);
-            //         playerShip.currentFrame = 2;
-            //         //this.circleOutline.setPosition(screenCenterX + (arrowDist/2), 935);
-            //     } else if(playerShip.currentFrame == 2)
-            //     {
-            //         //console.log("Color switched to red");
-            //         //changes the frame of the spritesheet to blue
-            //         playerShip.setFrame(0);
-            //         playerShip.currentFrame = 0;
-            //         //this.circleOutline.setPosition(screenCenterX - (arrowDist/2), 935);
-            //     }
-            // }
 
             //Tween movement to right lane with left arrow key
             if(action == "right" && currentLane < 3){
@@ -324,8 +297,7 @@ class Play extends Phaser.Scene {
             this.moveMap()
 
             // RGBA of pixel under player (both layers) -1 mean no layer (#topLayer problems)
-            this.shipLocationRGB = this.getTilemapRGB();
-            //console.log(this.hitboxRGB);
+            this.shipLocationRGB = this.getTilemapRGB();;
 
             //determine the correct layer to test
             if (this.shipLocationRGB[1][0] + this.shipLocationRGB[1][1] + this.shipLocationRGB[1][2] > 0) { //if top layer has a value
@@ -334,9 +306,12 @@ class Play extends Phaser.Scene {
                 this.curRGB = (this.shipLocationRGB[0]); //otherwise, bottom layer is selected
             }
 
-            //console.log(this.curRGB[0]);
-            //check collisions after converting Red value to a color string.
+            //check collisions
             this.checkCollisions(this.whatColor(this.curRGB), playerColor);
+        }
+
+        if (this.rewinding) {
+            this.smoothRewind();
         }
     } // end of update function
 
@@ -352,10 +327,10 @@ class Play extends Phaser.Scene {
         return color[C + M + Y];
     }
 
-    // function to figure out what color an RGB value is, This version only uses the R value.
+    // function to figure out what color an RGB value is, This version uses a summed value of R G and B.
     whatColor(RGBA) {
         let color;
-        let RGBsum = RGBA[0] + RGBA[1] + RGBA[2]; //sum Red Green and Blue values to get unique color code
+        let RGBsum = RGBA[0] + RGBA[1] + RGBA[2]; //sum Red Green and Blue values to get unique color code:
         switch (RGBsum) {
             case 86:
                 color = 'black';
@@ -389,7 +364,7 @@ class Play extends Phaser.Scene {
 
     //~~~~~~~~Collision Handeler Functions~~~~~~~~//
 
-    //getting the tile that the player is on every frame
+    //get the RGB value of the pixel under the player (for both map layers)
     getTilemapRGB() {
         let tileY = 0;
         let tileX = 0;
@@ -469,6 +444,7 @@ class Play extends Phaser.Scene {
         }  
     }
     
+    //function that comapres the tilemap color to the player color and figures out what to do.
     checkCollisions(newTile, player) { 
         let oldTile = tileColor;
         if (oldTile != newTile) {
@@ -598,7 +574,7 @@ class Play extends Phaser.Scene {
         //step maps forward
         map1dist += scrollSpeed;
         map2dist += scrollSpeed;
-        rawDist += scrollSpeed; //this is used for the tutorial spacing.
+        rawDist += scrollSpeed; //this is used for scoring.
 
         scoreCount = Math.floor((rawDist / tilemapScale) / 200)
     }
@@ -746,6 +722,7 @@ class Play extends Phaser.Scene {
         }
 
         console.log('reversed');
+        this.rewinding = true;
         this.add.tween({
             targets: topLayer1,
             y : m1Reset,
@@ -783,10 +760,18 @@ class Play extends Phaser.Scene {
         // }, 3000);
     }
 
+    smoothRewind() {
+        topLayer1.y = Math.floor(topLayer1.y);
+        botLayer1.y = Math.floor(botLayer1.y);
+        topLayer2.y = Math.floor(topLayer2.y);
+        botLayer2.y = Math.floor(botLayer2.y);
+    }
+
+    //updates the mapDist values after a rewind is complete.
     rewindPos(m1,m2) {
         map1dist = m1;
         map2dist = m2;
         this.pause = false;
+        this.rewinding = false;
     }
-
 }
