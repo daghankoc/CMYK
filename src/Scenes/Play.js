@@ -70,7 +70,7 @@ class Play extends Phaser.Scene {
         // this.bgm = this.sound.add('music_sfx');
         // this.bgm.play('music_sfx', {volume: 0.5});
 
-        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 10 
+        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
         this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
 
         //declaring local variables
@@ -90,6 +90,7 @@ class Play extends Phaser.Scene {
         this.scoreBackground;
         this.background = [];
         this.rewinding = false;
+        this.rybitsArray - [];
 
         //declaring color bools
 
@@ -651,13 +652,46 @@ class Play extends Phaser.Scene {
             this.scores[i].setFrame(binaryData[i]);
         }
     }
+
     //~~~~~~~~Rybit / Power up functions~~~~~~~~//
 
-    rybbitCollision(rybitsArray) {
-        for (let i = 0; i < rybitsArray.length; i++) {
-            rybitsArray[i].x;
+    rybitSpawner(inventory) {
+        let curBit;
+        if (inventory.length != 0) {
+            curBit = inventory[inventory.length - 1].colorID;
+        } else {
+            curBit = 0;
+        }
+        rybitsArray.unshift(new rybit); //this.add.prefab whatever it is
+        rybitsArray[0].x = Math.floor(Math.random() * 3);; //randomly decide which lane to spawn the bit in.
+        rybitsArray[0].colorID = curBit + 1; //make the new bit the next color you need to collect
+    }
+
+    rybitMover() {
+        if (rybitsArray.length != 0) {
+            for (let i = 0; i < rybitsArray.length; i++) {
+                rybitsArray[i].y += scrollSpeed;
+                if (rybitsArray[i].y > arrowY - 25 && rybitsArray[i].y < arrowY + 25) {
+                    this.rybitCollision(rybitsArray[i]); //passes whole rybit when it's in the range of the player.
+                }
+                //if the bit is off the bottom of the map, remove it
+                if (rybitsArray[i].y >  game.config.height + 50) {
+                    //destory the bit (code here)
+                    rybitsArray.splice(i); //remove the refrence from the array
+                }
+            }
         }
     }
+
+    rybitCollision(rybit) {
+        if (rybit.x == playerShip.x) {
+            //run collection code which sends the bit to the inventory array, and moves it to its spot in the rybbit UI.
+        }
+    }
+
+    //function that adds the bits to your inventory
+
+    //function that combines rybits when you have enough
 
     //~~~~~~~~effects~~~~~~~~//
 

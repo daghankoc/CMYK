@@ -115,3 +115,8 @@ let nextMap = 2; //counter used to index through mapNames array, change to start
 if (nextMap >= mapNames.length) { //puts you on the last map even if nextMap is set to a number greater than the number of maps loaded. (safety net)
     nextMap = mapNames.length - 1;
 }
+
+//rybit positional stuff
+const rybitOrigin = screenCenterX - (((800 * tilemapScale) / 8) * 3);
+const rybitSpacing = ((800 * tilemapScale) / 4);
+const rybitLanes = [rybitOrigin, rybitOrigin + rybitSpacing, rybitOrigin + (rybitSpacing * 2), rybitOrigin + (rybitSpacing * 3)]; 
