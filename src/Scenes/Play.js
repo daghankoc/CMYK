@@ -197,7 +197,7 @@ class Play extends Phaser.Scene {
 
         //selectiong the correct player color based on key inputs.
         this.C = keyA.isDown;
-        this.M = keyW.isDown + keyS.isDown;
+        this.M = keyW.isDown;
         this.Y = keyD.isDown;
         //console.log(this.C, this.M, this.Y);
 
