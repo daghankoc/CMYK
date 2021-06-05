@@ -117,6 +117,6 @@ if (nextMap >= mapNames.length) { //puts you on the last map even if nextMap is 
 }
 
 //rybit positional stuff
-const rybitOrigin = screenCenterX - (((800 * tilemapScale) / 8) * 3);
+const rybitOrigin = screenCenterX - (((800 * tilemapScale) / 8) * 3); //x pos of left lane center
 const rybitSpacing = ((800 * tilemapScale) / 4);
 const rybitLanes = [rybitOrigin, rybitOrigin + rybitSpacing, rybitOrigin + (rybitSpacing * 2), rybitOrigin + (rybitSpacing * 3)]; 
