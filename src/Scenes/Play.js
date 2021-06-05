@@ -518,7 +518,6 @@ class Play extends Phaser.Scene {
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
-            
             if(lives == 0) {
                 console.log("game over!");
                 this.time.addEvent({
