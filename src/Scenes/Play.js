@@ -50,6 +50,9 @@ class Play extends Phaser.Scene {
             frameHeight: 140,
         });
 
+        //rybit spritesheet
+        this.load.image('RybitBlue', "./assets/Powerups/RYBbitBlue.png");
+
         //Score UI spritesheet
         this.load.spritesheet('scoreUI', "./assets/ui/CMYK_score_dot.png",{
             frameWidth: 50,
@@ -515,6 +518,8 @@ class Play extends Phaser.Scene {
         }
         if (this.crashing) { //if a crash has been detected
             console.log('crashed!');
+            //trying to create a rybit
+            //this.rybit1 = new Rybit(this, player.x,player.y,'RybitBlue',0,0).setOrigin(0,0);
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
