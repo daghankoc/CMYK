@@ -74,7 +74,7 @@ class Play extends Phaser.Scene {
         // this.bgm.play('music_sfx', {volume: 0.5});
 
         this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
-        this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
+        this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
 
         //declaring local variables
         this.transitioning = false;
