@@ -13,6 +13,12 @@ class Play extends Phaser.Scene {
         this.load.tilemapTiledJSON('testmap4', './maps/CMYK_testmap4.json');
         this.load.tilemapTiledJSON('testmap5', './maps/CMYK_testmap5.json');
         this.load.tilemapTiledJSON('testmap6', './maps/CMYK_testmap6.json');
+        this.load.tilemapTiledJSON('map1', './maps/CMYKmap1.json');
+        this.load.tilemapTiledJSON('map2', './maps/CMYKmap2.json');
+        this.load.tilemapTiledJSON('map3', './maps/CMYKmap3.json');
+        this.load.tilemapTiledJSON('map4', './maps/CMYKmap4.json');
+        this.load.tilemapTiledJSON('map5', './maps/CMYKmap5.json');
+        this.load.tilemapTiledJSON('map6', './maps/CMYKmap6.json');
 
 
         //sound effect that plays when you move
@@ -50,6 +56,9 @@ class Play extends Phaser.Scene {
             frameHeight: 140,
         });
 
+        //rybit spritesheet
+        this.load.image('RybitBlue', "./assets/Powerups/RYBbitBlue.png");
+
         //Score UI spritesheet
         this.load.spritesheet('scoreUI', "./assets/ui/CMYK_score_dot.png",{
             frameWidth: 50,
@@ -71,7 +80,7 @@ class Play extends Phaser.Scene {
         // this.bgm.play('music_sfx', {volume: 0.5});
 
         this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
-        this.sound.play('music_sfx' + this.randMusic, {volume: 0.3});
+        this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
 
         scoreCount = 0;
 
@@ -523,10 +532,11 @@ class Play extends Phaser.Scene {
         }
         if (this.crashing) { //if a crash has been detected
             console.log('crashed!');
+            //trying to create a rybit
+            //this.rybit1 = new Rybit(this, player.x,player.y,'RybitBlue',0,0).setOrigin(0,0);
             this.sound.play('move_sfx');
             this.pause = true;
             this.crashing = false;
-            
             if(lives == 0) {
                 console.log("game over!");
                 this.time.addEvent({
