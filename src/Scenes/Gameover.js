@@ -9,6 +9,7 @@ class Gameover extends Phaser.Scene{
     }
     create(){
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
+
         let menuConfig = {
             fontFamily: 'Quicksand',
             fontSize: '28px',
@@ -39,6 +40,49 @@ class Gameover extends Phaser.Scene{
     }
     update(){
         this.flower.angle--;
+    }
+
+    createScoreUI() {
+        let i = 0;
+        let posX = dotPaddingRight;
+        let posY = dotPaddingTop;
+
+        for (i = 1; i <= 16; i++) {
+            if (i == 9) {
+                posX -= dotHorizSpacing;
+                posY = dotPaddingTop;
+            }
+            let score = this.add.sprite(posX, posY, 'scoreUI').setOrigin(0.5, 0.5);
+            score.setDepth('1');
+            score.scale = 0.5;
+            score.setFrame(0);
+
+            this.scores.push(score);
+            posY += dotVertSpacing;
+        }
+    }
+
+    //returns the (unsigned) binary data of a passed integer in 16 bits.
+    scoreBinary(score) {
+        if (score < 0) {
+            return 0;
+        }
+        let outputArr = [];
+        let num = score;
+        while(outputArr.length < 16) {
+            outputArr.push(num % 2);
+            num = Math.floor(num/2);
+        }
+        //console.log(outputArr)
+        return outputArr;
+    }
+
+    updateScore(score) {
+        let i = 0;
+        let binaryData = this.scoreBinary(score);
+        for (i = 0; i < 16; i++) {
+            this.scores[i].setFrame(binaryData[i]);
+        }
     }
 
     restart() {
