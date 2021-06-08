@@ -82,6 +82,8 @@ class Play extends Phaser.Scene {
         this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
         this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
 
+        scoreCount = 0;
+
         //declaring local variables
         this.transitioning = false;
         this.actionQueue = [];
@@ -469,6 +471,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe cyan');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
@@ -477,6 +480,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe majenta');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
@@ -485,6 +489,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe yellow');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
@@ -493,6 +498,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe red');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
@@ -501,6 +507,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe green');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
@@ -509,6 +516,7 @@ class Play extends Phaser.Scene {
                         this.crashing = true;
                     } else {
                         //console.log('safe blue');
+                        this.playerBump();
                         safeTranstions++;
                     }
                     break;
