@@ -59,7 +59,10 @@ class Play extends Phaser.Scene {
         });
 
         //rybit spritesheet
-        this.load.image('RybitBlue', "./assets/Powerups/RYBbitBlue.png");
+        this.load.spritesheet('rybit', "./assets/powerups/rybit_spritesheet86_86.png",{
+            frameWidth: 86,
+            frameHeight: 86,
+        });
 
         //Score UI spritesheet
         this.load.spritesheet('scoreUI', "./assets/ui/CMYK_score_dot.png",{
@@ -102,7 +105,8 @@ class Play extends Phaser.Scene {
         this.scoreBackground;
         this.background = [];
         this.rewinding = false;
-        this.rybitsArray - [];
+        this.rybitsArray = [];
+        this.inventory = [];
 
         //declaring color bools
 
@@ -196,15 +200,17 @@ class Play extends Phaser.Scene {
         }
 
         if (Phaser.Input.Keyboard.JustDown(spaceBar)) {
-            this.actionQueue.push("space");
-            //this.sound.play('cycle_sfx')
+            //this.actionQueue.push("space");
+            this.rybitSpawner(this.inventory);
         }
-
-        if (Phaser.Input.Keyboard.JustDown(keyPause)) { //pause button, needs menu?
-            this.pause = !this.pause;
-            this.sound.play('pause_sfx', {volume: 0.5});
-            console.log("pause");
+        if (!this.rewinding) {
+            if (Phaser.Input.Keyboard.JustDown(keyPause)) { //pause button, needs menu?
+                this.pause = !this.pause;
+                this.sound.play('pause_sfx', {volume: 0.5});
+                console.log("pause");
+            }
         }
+        
         
 
         //selectiong the correct player color based on key inputs.
@@ -332,7 +338,10 @@ class Play extends Phaser.Scene {
             }
 
             //check collisions
-                this.checkCollisions(this.whatColor(this.curRGB), playerColor);
+            this.checkCollisions(this.whatColor(this.curRGB), playerColor);
+
+            //move rybits
+            this.rybitMover();
         }
 
         if (this.rewinding) {
@@ -712,26 +721,38 @@ class Play extends Phaser.Scene {
     rybitSpawner(inventory) {
         let curBit;
         if (inventory.length != 0) {
-            curBit = inventory[inventory.length - 1].colorID;
+            curBit = inventory[inventory.length - 1].colorID + 1;
         } else {
             curBit = 0;
         }
-        rybitsArray.unshift(new rybit); //this.add.prefab whatever it is
-        rybitsArray[0].x = Math.floor(Math.random() * 3);; //randomly decide which lane to spawn the bit in.
-        rybitsArray[0].colorID = curBit + 1; //make the new bit the next color you need to collect
+
+        curBit += this.rybitsArray.length;
+
+        //let newBit = new Rybit(this, screenCenterX, -50, 'rybit', curBit, curBit).setOrigin(0.5, 0.5);
+        let newBit = this.add.sprite(screenCenterX, -50, 'rybit', curBit).setOrigin(0.5, 0.5)
+        this.rybitsArray.unshift(newBit); //this.add.prefab whatever it is
+        this.rybitsArray[0].captured = false;
+        this.rybitsArray[0].colorID = curBit;
+        this.rybitsArray[0].x = rybitLanes[Math.floor(Math.random() * 4)]; //randomly decide which lane to spawn the bit in.
+        this.rybitsArray[0].setFrame(curBit); //make the new bit the next color you need to collect
+        this.rybitsArray.captired = false;
     }
 
     rybitMover() {
-        if (rybitsArray.length != 0) {
-            for (let i = 0; i < rybitsArray.length; i++) {
-                rybitsArray[i].y += scrollSpeed;
-                if (rybitsArray[i].y > arrowY - 25 && rybitsArray[i].y < arrowY + 25) {
-                    this.rybitCollision(rybitsArray[i]); //passes whole rybit when it's in the range of the player.
-                }
-                //if the bit is off the bottom of the map, remove it
-                if (rybitsArray[i].y >  game.config.height + 50) {
-                    //destory the bit (code here)
-                    rybitsArray.splice(i); //remove the refrence from the array
+        if (this.rybitsArray.length != 0) {
+            for (let i = 0; i < this.rybitsArray.length; i++) {
+                if (this.rybitsArray[i].captured == false) {
+                    this.rybitsArray[i].y += scrollSpeed;
+                    
+                    if (this.rybitsArray[i].y > arrowY - 25 && this.rybitsArray[i].y < arrowY + 25) {
+                        this.rybitCollision(this.rybitsArray[i]); //passes whole rybit when it's in the range of the player.
+                    }
+                    //if the bit is off the bottom of the map, remove it
+                    if (this.rybitsArray[i].y >  game.config.height) {
+                        
+                        this.rybitsArray[i].destroy();
+                        this.rybitsArray.splice(i); //remove the refrence from the array
+                    }
                 }
             }
         }
@@ -739,7 +760,14 @@ class Play extends Phaser.Scene {
 
     rybitCollision(rybit) {
         if (rybit.x == playerShip.x) {
-            //run collection code which sends the bit to the inventory array, and moves it to its spot in the rybbit UI.
+            rybit.captured = true;
+            this.add.tween({
+                targets: rybit,
+                x : mapX - 50,
+                y : 45 + (70 * rybit.colorID),
+                duration: 500,
+                ease: 'cubic',
+            })
         }
     }
 
@@ -747,6 +775,22 @@ class Play extends Phaser.Scene {
 
 
     //~~~~~~~~effects~~~~~~~~//
+    wiggle(i) { //NOT WORKING, DANGEROUS
+          this.angel = -50;
+          this.add.tween({
+            targets: this.rybitsArray,
+            angel : 50,
+            duration: 500,
+            ease: 'Cubic',
+            onComplete: ()=> this.add.tween({
+              targets: this.rybitsArray,
+              angel : -50,
+              duration: 500,
+              ease: 'Cubic',
+              onComplete: ()=> this.wiggle(),
+            })
+        })
+    }
 
     playerBump() {
         this.add.tween({

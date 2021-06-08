@@ -6,10 +6,10 @@ var config = {
     transparent: true,
     scene : [Menu, Credits, Play, Gameover, Tutorial],
     parent: 'phaser_canvas',
-    fps: {
-        target: 60,
-        forceSetTimeOut: true
-    },
+    // fps: {
+    //     target: 60,
+    //     forceSetTimeOut: true
+    // },
     //autoCenter: true,
 };
 
