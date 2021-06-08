@@ -59,7 +59,7 @@ class Play extends Phaser.Scene {
         });
 
         //rybit spritesheet
-        this.load.spritesheet('rybit', "./assets/powerups/rybit_spritesheet86_86.png",{
+        this.load.spritesheet('rybit', "./assets/powerups/rybit_spritesheet.png",{
             frameWidth: 86,
             frameHeight: 86,
         });
@@ -729,7 +729,7 @@ class Play extends Phaser.Scene {
         curBit += this.rybitsArray.length;
 
         //let newBit = new Rybit(this, screenCenterX, -50, 'rybit', curBit, curBit).setOrigin(0.5, 0.5);
-        let newBit = this.add.sprite(screenCenterX, -50, 'rybit', curBit).setOrigin(0.5, 0.5)
+        let newBit = this.add.sprite(screenCenterX, -50, 'rybit').setOrigin(0.5, 0.5)
         this.rybitsArray.unshift(newBit); //this.add.prefab whatever it is
         this.rybitsArray[0].captured = false;
         this.rybitsArray[0].colorID = curBit;
