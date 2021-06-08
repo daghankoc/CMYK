@@ -13,10 +13,10 @@ class Tutorial extends Phaser.Scene {
     create(){
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
         let menuConfig = {
-            fontFamily: 'Quicksand',
+            fontFamily: 'font1',
             fontSize: '28px',
             //backgroundColor: '#AEB6BF',
-            color: '#AEB6BF',
+            color: '#fff655',
             align: 'right',
             padding: {
                 top: 0,

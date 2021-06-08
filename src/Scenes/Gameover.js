@@ -26,7 +26,7 @@ class Gameover extends Phaser.Scene{
         });
 
         let menuConfig = {
-            fontFamily: 'Quicksand',
+            fontFamily: 'font1',
             fontSize: '28px',
             color: '#AEB6BF',
             align: 'right',
