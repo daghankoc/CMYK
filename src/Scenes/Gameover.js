@@ -10,7 +10,7 @@ class Gameover extends Phaser.Scene{
     create(){
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
         let menuConfig = {
-            fontFamily: 'Quicksand',
+            fontFamily: 'font1',
             fontSize: '28px',
             color: '#AEB6BF',
             align: 'right',
