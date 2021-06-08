@@ -59,7 +59,7 @@ class Play extends Phaser.Scene {
         });
 
         //rybit spritesheet
-        this.load.spritesheet('rybit', "./assets/powerups/rybit_spritesheet.png",{
+        this.load.spritesheet('rybit', "./assets/powerups/rybit_spritesheetFixed.png",{
             frameWidth: 86,
             frameHeight: 86,
         });
