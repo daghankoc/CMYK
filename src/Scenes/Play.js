@@ -27,8 +27,6 @@ class Play extends Phaser.Scene {
         this.load.audio('cycle_sfx', './assets/sound/fx/click.wav');
         //sound effect that plays when you cross into a new color zone (successfully)
         this.load.audio('transition_sfx', './assets/sound/fx/kick.wav');
-        //sound effect that plays when you pause or use a menu button
-        //this.load.audio('kick', './assets/sound/fx/kick.wav');
         //sound effect that plays when you crash :(
         this.load.audio('crash_sfx', './assets/sound/fx/crash.wav');
         //rewind
@@ -36,8 +34,8 @@ class Play extends Phaser.Scene {
         //pause
         this.load.audio('pause_sfx', './assets/sound/fx/doink.wav');
         //background music
-        this.load.audio('music_sfx1', './assets/sound/music/robotaki_obelisk.mp3');
-        this.load.audio('music_sfx2', './assets/sound/music/open_eye_signal.mp3');
+        //this.load.audio('music_sfx1', './assets/sound/music/robotaki_obelisk.mp3');
+        //this.load.audio('music_sfx2', './assets/sound/music/open_eye_signal.mp3');
         this.load.audio('music_sfx3', './assets/sound/music/fuckin house music.wav');
 
         //load tutorial assets
@@ -78,16 +76,14 @@ class Play extends Phaser.Scene {
     
     
     create() {
-        //setting the background color to eggshell
-        //this.cameras.main.setBackgroundColor('#fbfbe3');
+        //play music
         this.bgm = this.sound.add('music_sfx3');
         this.bgm.play({loop: true, volume: 0.3});
 
         //this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
         //this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
-        //this.sound.play('music_sfx3', {loop: true, volume: 0.3});
 
-        scoreCount = 0;1
+        scoreCount = 0;
 
         //declaring local variables
         this.transitioning = false;
@@ -133,11 +129,15 @@ class Play extends Phaser.Scene {
             duration: 1000,
         });
 
+        //creating scrolling background
         for (let j = 0; j < 3; j++) {
             this.background[j] = this.add.tileSprite(screenCenterX, screenCenterY, 640, 960, 'background').setOrigin(0.5, 0.5);
             this.background[j].scale = ((j + 1) / 10) + 0.9;
             this.background[j].alpha = (j + 1) / 4;
         }
+
+        this.mapBgr = this.add.rectangle(screenCenterX, screenCenterY, 800 * tilemapScale, game.config.height, 0x14182a).setOrigin(0.5, 0.5);
+        this.mapBgr.alpha = 1;
 
         //mapData array initialization, based on mapNames order
         for (let i = 0; i < mapNames.length; i++) {
@@ -186,9 +186,6 @@ class Play extends Phaser.Scene {
 
     update(){
 
-        // let shipX = ((playerShip.x - mapX) / tilemapScale);
-        // console.log(shipX);
-
         //Tween movement to right lane with right arrow key 
         if (Phaser.Input.Keyboard.JustDown(keyRight)) {
             this.actionQueue.push("right");
@@ -223,7 +220,6 @@ class Play extends Phaser.Scene {
         
         //console.log(this.currentPlayerColor);
         if (this.currentPlayerColor != playerColor) {
-            this.sound.play('cycle_sfx', {volume: 0.5});
             this.playerRevBump();
             switch (this.currentPlayerColor) {
                 case 'black':
@@ -235,36 +231,43 @@ class Play extends Phaser.Scene {
                     playerColor = 'cyan';
                     playerShip.setFrame(1);
                     this.colorUI.setFrame(1);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'majenta':
                     playerColor = 'majenta';
                     playerShip.setFrame(2);
                     this.colorUI.setFrame(2);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'yellow':
                     playerColor = 'yellow';
                     playerShip.setFrame(3);
                     this.colorUI.setFrame(3);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'red':
                     playerColor = 'red';
                     playerShip.setFrame(4);
                     this.colorUI.setFrame(4);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'green':
                     playerColor = 'green';
                     playerShip.setFrame(5);
                     this.colorUI.setFrame(5);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'blue':
                     playerColor = 'blue';
                     playerShip.setFrame(6);
                     this.colorUI.setFrame(6);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
                 case 'eggshell':
                     playerColor = 'eggshell';
                     playerShip.setFrame(7);
                     this.colorUI.setFrame(7);
+                    this.sound.play('cycle_sfx', {volume: 0.5});
                     break;
             }
         }
@@ -555,28 +558,29 @@ class Play extends Phaser.Scene {
             this.pause = true;
             this.crashing = false;
             if(lives == 0) {
-                console.log("game over!");
+                //console.log("game over!");
+                this.rewinding = true;
                 this.playerDeath();
-                this.tweens.add({
-                    targets:  this.bgm,
-                    volume: 0,
-                    duration: 1950,
-                    ease: 'cubic',
-                    onComplete: ()=> this.bgm.stop(),
-                });
-                this.add.tween({
-                    targets: this.cameras.main,
-                    alpha: 0,
-                    duration: 2000,
-                    onComplete: ()=> this.endScene(),
-                });
-                // this.time.addEvent({
-                //     delay: 2000,
-                //     callback: ()=>{
-                //         this.endScene();
-                //     },
-                //     loop: false
-                // })
+                
+                this.time.addEvent({
+                    delay: 1500,
+                    callback: ()=>{
+                        this.tweens.add({
+                            targets:  this.bgm,
+                            volume: 0,
+                            duration: 1950,
+                            ease: 'cubic',
+                            onComplete: ()=> this.bgm.stop(),
+                        });
+                        this.add.tween({
+                            targets: this.cameras.main,
+                            alpha: 0,
+                            duration: 2000,
+                            onComplete: ()=> this.endScene(),
+                        });
+                    },
+                    loop: false
+                })
             } else if (lives > 0 ) {
                 this.playerRewind();
                 this.reverseMap();
@@ -741,7 +745,6 @@ class Play extends Phaser.Scene {
 
     //function that adds the bits to your inventory
 
-    //function that combines rybits when you have enough
 
     //~~~~~~~~effects~~~~~~~~//
 

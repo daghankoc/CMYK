@@ -46,7 +46,7 @@ class Gameover extends Phaser.Scene{
         .on('pointerdown', () => {
             this.tweens.add({
                 targets: [this.cmyk, this.flower, this.restartButton, this.gameover, this.score, this.scoreUI],
-                x: 800,
+                x: 900,
                 duration: 1500,
                 ease: 'Cubic',
                 onComplete: ()=> location.reload(),
