@@ -99,13 +99,13 @@ let lives = 3;
 //data structures and stuff for maps
 
 //map name arrays, must be updated when new maps are added
-let mapsEasy = ['testmap1', 'testmap2', 'testmap3', 'testmap4', 'testmap5', 'testmap6'];
-let mapsMid = [];
-let mapsHard = [];
+let mapsEasy = ['testmap2'];
+let mapsMid = ['testmap1', 'testmap3', ];
+let mapsHard = ['testmap4', 'testmap5', 'testmap6', 'map1', 'map2', 'map3', 'map4', 'map5', 'map6'];
 
 //future function that defines a random map order for each game, but still conforms to tutorial order and difficulty.
 function createMapOrder() {
-    return mapsEasy.concat(mapsMid, mapsHard); //currently puts maps in order.
+    return mapsEasy.concat(shuffle(mapsMid), shuffle(mapsHard)); //currently puts maps in order.
 }
 
 let mapNames = createMapOrder(); //populate map names order
@@ -119,4 +119,16 @@ if (nextMap >= mapNames.length) { //puts you on the last map even if nextMap is 
 //rybit positional stuff
 const rybitOrigin = screenCenterX - (((800 * tilemapScale) / 8) * 3); //x pos of left lane center
 const rybitSpacing = ((800 * tilemapScale) / 4);
-const rybitLanes = [rybitOrigin, rybitOrigin + rybitSpacing, rybitOrigin + (rybitSpacing * 2), rybitOrigin + (rybitSpacing * 3)]; 
+const rybitLanes = [rybitOrigin, rybitOrigin + rybitSpacing, rybitOrigin + (rybitSpacing * 2), rybitOrigin + (rybitSpacing * 3)];
+
+//Fisher Yates shuffle, JS implementation written by Mike Bostock, retrieved from: https://bost.ocks.org/mike/shuffle/
+function shuffle(array) {
+    var m = array.length, t, i;
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+    return array;
+}

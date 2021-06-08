@@ -4,6 +4,9 @@ class Menu extends Phaser.Scene {
     }
     
     preload(){
+        this.load.audio('main_menu', './assets/sound/music/main menu.wav');
+        this.load.audio('kick', './assets/sound/fx/kick.wav');
+
         this.load.image('cmyk_logo', './assets/CMYKmenu_logo.png');
         this.load.image('flower', './assets/menu_flower.png');
         this.load.image('beginButton', './assets/MenuButtonBegin.png');
@@ -12,6 +15,19 @@ class Menu extends Phaser.Scene {
     }
 
     create(){
+        if (!this.bgm) {
+            this.bgm = this.sound.add('main_menu', {loop: true, volume: 0.3});
+            this.bgm.play();
+            this.cameras.main.setAlpha(0);
+            this.add.tween({
+                targets: this.cameras.main,
+                alpha: 1,
+                duration: 1000,
+            });
+        }
+
+        
+        
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
         this.cmyk = this.add.image(screenCenterX, screenCenterY - 100, 'cmyk_logo').setOrigin(0.5);
         this.flower = this.add.image(screenCenterX+1, screenCenterY - 166, 'flower').setOrigin(0.5);
@@ -21,19 +37,28 @@ class Menu extends Phaser.Scene {
         this.startButton = this.add.image(game.config.width/2, game.config.height * 0.8, 'beginButton').setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
+            this.sound.play('kick', {volume: 0.5});
+            this.tweens.add({
+                targets:  this.bgm,
+                volume:   0,
+                duration: 2000,
+                onComplete: ()=> this.bgm.stop(),
+            });
+
             this.tweens.add({
                 targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
-                x: -250,
+                x: -210,
                 duration: 2000,
                 ease: 'Cubic',
-                onComplete: ()=> this.scene.stop('menuScene'),
+                onComplete: ()=> {this.scene.stop('menuScene'), this.scene.launch('playScene')}
             });
-            this.scene.launch('playScene')
+            //this.scene.launch('playScene')
         });
 
         this.creditsButton
         .setInteractive()
         .on('pointerdown', () => {
+            this.sound.play('kick', {volume: 0.5});
             this.tweens.add({
                 targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
                 x: -250,
@@ -47,6 +72,7 @@ class Menu extends Phaser.Scene {
         this.tutorialButton
         .setInteractive()
         .on('pointerdown', () => {
+            this.sound.play('kick', {volume: 0.5});
             this.tweens.add({
                 targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
                 x: -250,
@@ -61,5 +87,4 @@ class Menu extends Phaser.Scene {
     update(){
         this.flower.angle++;
     }
-
 }

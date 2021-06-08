@@ -6,9 +6,24 @@ class Gameover extends Phaser.Scene{
     preload(){
         this.load.image('cmyk_logo', './assets/CMYKmenu_logo.png');
         this.load.image('flower', './assets/menu_flower.png');
+
+        this.load.audio('gameover', './assets/sound/music/game over.wav');
     }
     create(){
+        this.cameras.main.setAlpha(0);
+        this.add.tween({
+            targets: this.cameras.main,
+            alpha: 1,
+            duration: 1000,
+        });
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
+        this.bgm = this.sound.add('gameover', {volume: 0, loop: true});
+        this.bgm.play();
+        this.add.tween({
+            targets: this.bgm,
+            volume: 0.5,
+            duration: 1000,
+        });
 
         let menuConfig = {
             fontFamily: 'Quicksand',
@@ -31,8 +46,8 @@ class Gameover extends Phaser.Scene{
         .on('pointerdown', () => {
             this.tweens.add({
                 targets: [this.cmyk, this.flower, this.restartButton, this.gameover, this.score, this.scoreUI],
-                x: -250,
-                duration: 2000,
+                x: 800,
+                duration: 1500,
                 ease: 'Cubic',
                 onComplete: ()=> location.reload(),
             });

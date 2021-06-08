@@ -22,19 +22,23 @@ class Play extends Phaser.Scene {
 
 
         //sound effect that plays when you move
-        this.load.audio('move_sfx', './assets/sound/testSound.wav');
+        this.load.audio('move_sfx', './assets/sound/fx/woosh_better.wav');
         //sound effect that plays when you cycle colors
-        this.load.audio('cycle_sfx', './assets/sound/testSound.wav');
+        this.load.audio('cycle_sfx', './assets/sound/fx/click.wav');
         //sound effect that plays when you cross into a new color zone (successfully)
-        this.load.audio('transition_sfx', './assets/sound/testSound.wav');
+        this.load.audio('transition_sfx', './assets/sound/fx/kick.wav');
         //sound effect that plays when you pause or use a menu button
-        this.load.audio('menu_sfx', './assets/sound/testSound.wav');
+        //this.load.audio('kick', './assets/sound/fx/kick.wav');
         //sound effect that plays when you crash :(
-        this.load.audio('menu_sfx', './assets/sound/testSound.wav');
+        this.load.audio('crash_sfx', './assets/sound/fx/crash.wav');
+        //rewind
+        this.load.audio('rewind', './assets/sound/fx/reverse.wav');
+        //pause
+        this.load.audio('pause_sfx', './assets/sound/fx/doink.wav');
         //background music
-        this.load.audio('music_sfx1', './assets/sound/robotaki_obelisk.mp3');
-        this.load.audio('music_sfx2', './assets/sound/open_eye_signal.mp3');
-        this.load.audio('music_sfx3', './assets/sound/fuckin house music.wav');
+        this.load.audio('music_sfx1', './assets/sound/music/robotaki_obelisk.mp3');
+        this.load.audio('music_sfx2', './assets/sound/music/open_eye_signal.mp3');
+        this.load.audio('music_sfx3', './assets/sound/music/fuckin house music.wav');
 
         //load tutorial assets
         // this.load.image('tutorial_move', "./assets/tutorial/TutorialMove.png");
@@ -76,13 +80,14 @@ class Play extends Phaser.Scene {
     create() {
         //setting the background color to eggshell
         //this.cameras.main.setBackgroundColor('#fbfbe3');
-        // this.bgm = this.sound.add('music_sfx');
-        // this.bgm.play('music_sfx', {volume: 0.5});
+        this.bgm = this.sound.add('music_sfx3');
+        this.bgm.play({loop: true, volume: 0.3});
 
-        this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
-        this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
+        //this.randMusic = Math.floor(Math.random() * 3) + 1;  // returns a random integer from 1 to 3 
+        //this.sound.play('music_sfx' + this.randMusic, {loop: true, volume: 0.3});
+        //this.sound.play('music_sfx3', {loop: true, volume: 0.3});
 
-        scoreCount = 0;
+        scoreCount = 0;1
 
         //declaring local variables
         this.transitioning = false;
@@ -187,12 +192,10 @@ class Play extends Phaser.Scene {
         //Tween movement to right lane with right arrow key 
         if (Phaser.Input.Keyboard.JustDown(keyRight)) {
             this.actionQueue.push("right");
-            this.sound.play('move_sfx');
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyLeft)) {
             this.actionQueue.push("left");
-            this.sound.play('move_sfx')
         }
 
         if (Phaser.Input.Keyboard.JustDown(spaceBar)) {
@@ -202,7 +205,7 @@ class Play extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyPause)) { //pause button, needs menu?
             this.pause = !this.pause;
-            this.sound.play('move_sfx');
+            this.sound.play('pause_sfx', {volume: 0.5});
             console.log("pause");
         }
         
@@ -212,10 +215,15 @@ class Play extends Phaser.Scene {
         this.M = keyW.isDown + keyS.isDown;
         this.Y = keyD.isDown;
         //console.log(this.C, this.M, this.Y);
-
-        this.currentPlayerColor = this.colorLogic(this.C, this.M, this.Y);
+        if (!this.rewinding) {
+            this.currentPlayerColor = this.colorLogic(this.C, this.M, this.Y);
+        } else {
+            this.currentPlayerColor = playerColor;
+        }
+        
         //console.log(this.currentPlayerColor);
         if (this.currentPlayerColor != playerColor) {
+            this.sound.play('cycle_sfx', {volume: 0.5});
             this.playerRevBump();
             switch (this.currentPlayerColor) {
                 case 'black':
@@ -267,6 +275,7 @@ class Play extends Phaser.Scene {
             //Tween movement to right lane with left arrow key
             if(action == "right" && currentLane < 3){
                 this.transitioning = true;
+                this.sound.play('move_sfx', {volume: 0.20});
 
                 this.add.tween({
                     targets: playerShip,
@@ -281,6 +290,7 @@ class Play extends Phaser.Scene {
             //Tween movement to left lane with left arrow key
             if(action == "left" && currentLane > 0){
                 this.transitioning = true;
+                this.sound.play('move_sfx', {volume: 0.20});
 
                 this.add.tween({
                     targets: playerShip,
@@ -319,7 +329,7 @@ class Play extends Phaser.Scene {
             }
 
             //check collisions
-            this.checkCollisions(this.whatColor(this.curRGB), playerColor);
+                this.checkCollisions(this.whatColor(this.curRGB), playerColor);
         }
 
         if (this.rewinding) {
@@ -464,7 +474,7 @@ class Play extends Phaser.Scene {
         } else {
             this.colorTransition = false;
         }
-        if (this.colorTransition) {
+        if (this.colorTransition && !this.invulnerable) {
             switch (newTile) {
                 case 'cyan':
                     if (player != 'cyan') {
@@ -472,6 +482,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe cyan');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -481,6 +492,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe majenta');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -490,6 +502,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe yellow');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -499,6 +512,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe red');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -508,6 +522,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe green');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -517,6 +532,7 @@ class Play extends Phaser.Scene {
                     } else {
                         //console.log('safe blue');
                         this.playerBump();
+                        this.sound.play('kick', {volume: 0.6});
                         safeTranstions++;
                     }
                     break;
@@ -532,21 +548,37 @@ class Play extends Phaser.Scene {
         }
         if (this.crashing) { //if a crash has been detected
             console.log('crashed!');
+            
             //trying to create a rybit
             //this.rybit1 = new Rybit(this, player.x,player.y,'RybitBlue',0,0).setOrigin(0,0);
-            this.sound.play('move_sfx');
+            this.sound.play('crash_sfx');
             this.pause = true;
             this.crashing = false;
             if(lives == 0) {
                 console.log("game over!");
-                this.time.addEvent({
-                    delay: 1100,
-                    callback: ()=>{
-                        this.endScene();
-                    },
-                    loop: false
-                })
+                this.playerDeath();
+                this.tweens.add({
+                    targets:  this.bgm,
+                    volume: 0,
+                    duration: 1950,
+                    ease: 'cubic',
+                    onComplete: ()=> this.bgm.stop(),
+                });
+                this.add.tween({
+                    targets: this.cameras.main,
+                    alpha: 0,
+                    duration: 2000,
+                    onComplete: ()=> this.endScene(),
+                });
+                // this.time.addEvent({
+                //     delay: 2000,
+                //     callback: ()=>{
+                //         this.endScene();
+                //     },
+                //     loop: false
+                // })
             } else if (lives > 0 ) {
+                this.playerRewind();
                 this.reverseMap();
                 lives--;
                 console.log("remaining lives: " + lives);
@@ -717,12 +749,12 @@ class Play extends Phaser.Scene {
         this.add.tween({
             targets: playerShip,
             scale : arrowScale+ 0.1,
-            duration: 50,
-            ease: 'cubic',
+            duration: 20,
+            ease: 'linear',
             onComplete: ()=> this.add.tween({
                 targets: playerShip,
                 scale : arrowScale,
-                duration: 50,
+                duration: 80,
                 ease: 'cubic',
             }),
         })
@@ -735,6 +767,50 @@ class Play extends Phaser.Scene {
             scale : arrowScale,
             duration: 50,
             ease: 'cubic',
+        })
+    }
+
+    playerRewind() {
+        this.invulnerable = true;
+        this.bgm.volume = 0.1;
+        this.add.tween({
+            targets: playerShip,
+            scale : arrowScale + 0.2,
+            alpha : 0.5,
+            duration: 50,
+            ease: 'linear',
+            onComplete: ()=> this.add.tween({
+                targets: playerShip,
+                scale : arrowScale + 0.1,
+                duration: 500,
+                ease: 'cubic',
+            }),
+        })
+        this.time.addEvent({
+            delay: 1500,
+            callback: ()=>{
+                this.add.tween({
+                    targets: playerShip,
+                    scale : arrowScale,
+                    duration: 500,
+                    ease: 'cubic',
+                })
+            },
+            loop: false
+        })
+        this.time.addEvent({
+            delay: 2900,
+            callback: ()=>{
+                this.add.tween({
+                    targets: playerShip,
+                    alpha : 1,
+                    duration: 50,
+                    ease: 'cubic',
+                    onComplete: () => {this.bgm.volume = 0.3, this.invulnerable = false;},
+                })
+                this.playerBump();
+            },
+            loop: false
         })
     }
 
@@ -774,6 +850,7 @@ class Play extends Phaser.Scene {
         }
 
         console.log('reversed');
+        this.sound.play('rewind', {volume: 0.5});
         this.rewinding = true;
         this.add.tween({
             targets: topLayer1,

@@ -32,6 +32,8 @@ class Tutorial extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height * 0.95, 'MAIN MENU', menuConfig).setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
+            this.sound.play('kick', {volume: 0.5});
+
             this.tweens.add({
                 targets: [this.cmyk, this.flower],
                 x: -250,
