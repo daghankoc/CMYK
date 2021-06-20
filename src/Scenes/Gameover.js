@@ -25,6 +25,8 @@ class Gameover extends Phaser.Scene{
             duration: 1000,
         });
 
+        this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         let menuConfig = {
             fontFamily: 'font1',
             fontSize: '28px',
@@ -44,17 +46,15 @@ class Gameover extends Phaser.Scene{
         this.restartButton = this.add.text(game.config.width/2, game.config.height * 0.9, 'RESTART', menuConfig).setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            this.tweens.add({
-                targets: [this.cmyk, this.flower, this.restartButton, this.gameover, this.score, this.scoreUI],
-                x: 900,
-                duration: 1500,
-                ease: 'Cubic',
-                onComplete: ()=> location.reload(),
-            });
+            this.restart();
         });
     }
     update(){
         this.flower.angle--;
+
+        if (Phaser.Input.Keyboard.JustDown(this.space)) {
+            this.restart();
+        }
     }
 
     createScoreUI() {
@@ -101,8 +101,16 @@ class Gameover extends Phaser.Scene{
     }
 
     restart() {
-        this.scene.stop('playScene');
-        this.scene.start('playScene');
+        // this.scene.stop('playScene');
+        // this.scene.start('playScene');
+
+        this.tweens.add({
+            targets: [this.cmyk, this.flower, this.restartButton, this.gameover, this.score, this.scoreUI],
+            x: 900,
+            duration: 1500,
+            ease: 'Cubic',
+            onComplete: ()=> location.reload(),
+        });
     }
 }
 

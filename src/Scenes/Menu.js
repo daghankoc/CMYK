@@ -26,6 +26,8 @@ class Menu extends Phaser.Scene {
             });
         }
 
+        this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         
         
         //this.cameras.main.fadeIn(2000, 0, 0, 0)
@@ -37,22 +39,7 @@ class Menu extends Phaser.Scene {
         this.startButton = this.add.image(game.config.width/2, game.config.height * 0.8, 'beginButton').setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            this.sound.play('kick', {volume: 0.5});
-            this.tweens.add({
-                targets:  this.bgm,
-                volume:   0,
-                duration: 2000,
-                onComplete: ()=> this.bgm.stop(),
-            });
-
-            this.tweens.add({
-                targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
-                x: -210,
-                duration: 2000,
-                ease: 'Cubic',
-                onComplete: ()=> {this.scene.stop('menuScene'), this.scene.launch('playScene')}
-            });
-            //this.scene.launch('playScene')
+            this.startGame();
         });
 
         this.creditsButton
@@ -86,5 +73,27 @@ class Menu extends Phaser.Scene {
     }
     update(){
         this.flower.angle++;
+
+        if (Phaser.Input.Keyboard.JustDown(this.space)) {
+            this.startGame();
+        }
+    }
+
+    startGame() {
+        this.sound.play('kick', {volume: 0.5});
+        this.tweens.add({
+            targets:  this.bgm,
+            volume:   0,
+            duration: 2000,
+            onComplete: ()=> this.bgm.stop(),
+        });
+
+        this.tweens.add({
+            targets: [this.cmyk, this.startButton, this.flower, this.creditsButton, this.tutorialButton],
+            x: -210,
+            duration: 2000,
+            ease: 'Cubic',
+            onComplete: ()=> {this.scene.stop('menuScene'), this.scene.launch('playScene')}
+        });
     }
 }

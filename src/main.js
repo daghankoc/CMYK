@@ -104,12 +104,13 @@ let lives = 3;
 
 //map name arrays, must be updated when new maps are added
 let mapsEasy = ['testmap2'];
-let mapsMid = ['testmap1', 'testmap3', ];
+let mapsMid = ['testmap1', 'testmap3'];
+let mapsMid2 = ['mid1', 'mid2'];
 let mapsHard = ['testmap4', 'testmap5', 'testmap6', 'map1', 'map2', 'map3', 'map4', 'map5', 'map6'];
 
 //future function that defines a random map order for each game, but still conforms to tutorial order and difficulty.
 function createMapOrder() {
-    return mapsEasy.concat(shuffle(mapsMid), shuffle(mapsHard)); //currently puts maps in order.
+    return mapsEasy.concat(shuffle(mapsMid),shuffle(mapsMid2), shuffle(mapsHard)); //currently puts maps in order.
 }
 
 let mapNames = createMapOrder(); //populate map names order

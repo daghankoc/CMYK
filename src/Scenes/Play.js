@@ -13,6 +13,9 @@ class Play extends Phaser.Scene {
         this.load.tilemapTiledJSON('testmap4', './maps/CMYK_testmap4.json');
         this.load.tilemapTiledJSON('testmap5', './maps/CMYK_testmap5.json');
         this.load.tilemapTiledJSON('testmap6', './maps/CMYK_testmap6.json');
+        this.load.tilemapTiledJSON('mid1', './maps/CMYKmid1.json');
+        this.load.tilemapTiledJSON('mid2', './maps/CMYKmid2.json');
+
         this.load.tilemapTiledJSON('map1', './maps/CMYKmap1.json');
         this.load.tilemapTiledJSON('map2', './maps/CMYKmap2.json');
         this.load.tilemapTiledJSON('map3', './maps/CMYKmap3.json');
