@@ -314,7 +314,7 @@ class Play extends Phaser.Scene {
                 currentLane --;
             }
         }
-
+        //move background
         this.background[0].tilePositionY -= 1;
         this.background[1].tilePositionY -= 1.1;
         this.background[2].tilePositionY -= 1.2;
@@ -569,6 +569,12 @@ class Play extends Phaser.Scene {
             this.sound.play('crash_sfx');
             this.pause = true;
             this.crashing = false;
+
+            //reduce scroll speed after crash (no less than 4)
+            if (scrollSpeed > 4) {
+                scrollSpeed--;
+            }
+            
             if(lives == 0) {
                 //console.log("game over!");
                 this.rewinding = true;
@@ -735,6 +741,7 @@ class Play extends Phaser.Scene {
         let newBit = this.add.sprite(screenCenterX, -50, 'rybit').setOrigin(0.5, 0.5)
         this.rybitsArray.unshift(newBit); //this.add.prefab whatever it is
         this.rybitsArray[0].captured = false;
+        this.rybitsArray[0].speedOffset = Math.floor(Math.random() * 3) -1;
         this.rybitsArray[0].colorID = curBit;
         this.rybitsArray[0].x = rybitLanes[Math.floor(Math.random() * 4)]; //randomly decide which lane to spawn the bit in.
         this.rybitsArray[0].setFrame(curBit); //make the new bit the next color you need to collect
@@ -745,7 +752,7 @@ class Play extends Phaser.Scene {
         if (this.rybitsArray.length != 0) {
             for (let i = 0; i < this.rybitsArray.length; i++) {
                 if (this.rybitsArray[i].captured == false) {
-                    this.rybitsArray[i].y += scrollSpeed;
+                    this.rybitsArray[i].y += scrollSpeed + this.rybitsArray[i].speedOffset;
                     
                     if (this.rybitsArray[i].y > arrowY - 25 && this.rybitsArray[i].y < arrowY + 25) {
                         this.rybitCollision(this.rybitsArray[i]); //passes whole rybit when it's in the range of the player.
